@@ -1,0 +1,557 @@
+@import url("file:///home/naturalcapsule/.cache/wal/colors-waybar.css");
+
+
+button {
+    all: unset;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+}
+
+button:hover,
+button:focus,
+button:active {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+button * {
+    all: unset;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+.timeButton {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    color: @color1;
+    background-color: @color4;
+    border-radius: 15px;
+    margin: 3px;
+    padding-right: 3px;
+    padding-left: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+}
+
+
+.timeButton:hover {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    color: @color4;
+    background-color: @color1;
+    border-radius: 15px;
+    margin: 3px;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.VolumeControlButton {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    margin: 3px;
+    font-size: 17px;
+    color: @color1;
+    background-color: @color4;
+    border-radius: 15px;
+    padding-right: 10px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding-left: 10px;
+}
+
+.VolumeControlButton:hover {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    margin: 3px;
+    font-size: 17px;
+    color: @color4;
+    background-color: @color1;
+    border-radius: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+
+.SearchButton {
+    font-size: 20px;
+    color: @color1;
+    background-color: @color4;
+    border-radius: 15px;
+    margin: 3px;
+    padding-right: 10px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding-left: 10px;
+}
+
+
+.SearchButton:hover {
+    font-size: 20px;
+    margin: 3px;
+    color: @color4;
+    background-color: @color1;
+    border-radius: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.mediaButton {
+    margin: 3px;
+    background-color: @color4;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    padding: 4px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.mediaButton:hover {
+    margin: 3px;
+    background-color: @color1;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    border-radius: 30px;
+    padding-right: 4px;
+    padding-left: 4px;
+
+}
+
+
+
+.DropdownTitle {
+    background-color: @color4;
+    color: white;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+
+}
+
+.DropdownArtist {
+    background-color: @color4;
+    color: white;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+}
+
+.Date {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 12px;
+    background-color: @color4;
+}
+
+
+.VolumeLabel {
+    background-color: @color4;
+    font-size: 25px;
+    color: @color1;
+}
+
+.MicLabel {
+    background-color: @color4;
+    font-size: 20px;
+    color: @color1;
+}
+
+.VolumeScale {
+    color: black;
+    background-color: @color4;
+    border-radius: 5px;
+    padding: 4px 8px;
+}
+
+.VolumeScale trough {
+    background: @color1;
+    border-radius: 5px;
+    border: 5px;
+    border: 0px;
+    
+}
+
+.VolumeScale slider {
+    background: @color1;
+    border-radius: 5px;
+    outline: none;
+    border: 0px;
+    margin-top: -6px;
+}
+
+
+.VolumeScale slider:active {
+    background: transparent;
+    outline: none;
+    border: 0px;
+}
+
+
+
+.MicScale {
+    background-color: @color4;
+    border-radius: 5px;
+    padding: 4px 8px;
+}
+
+.MicScale trough {
+    background: @color1;
+    border-radius: 5px;
+    border: 5px;
+    border: 0px;
+    
+}
+
+.MicScale slider {
+    background: @color1;
+    border-radius: 5px;
+    outline: none;
+    border: 0px;
+    margin-top: -6px;
+}
+
+
+.MicScale slider:active {
+    background: transparent;
+    outline: none;
+    border: none;
+}
+
+
+
+.PowerOfflabel {
+    background-color: @color4;
+    color: @color1;
+}
+
+.Resetlabel {
+    background-color: @color4;
+    color: @color1;
+}
+
+.LockLabel {
+    background-color: @color4;
+    color: @color1;
+}
+
+.HibernateLabel {
+    background-color: @color4;
+    color: @color1;
+}
+
+.Wifi {
+    background-color: @color4;
+    font-size: 30px;
+    color: @color1;
+    margin: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+
+.LockButton {
+    background-color: @color4;
+    font-size: 30px;
+    color: @color7;
+    margin: 3px;
+    padding-right: 3px;
+    padding-left: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.LockButton:hover {
+    background-color: @color1;
+    font-size: 30px;
+    border: 12px;
+    margin: 3px;
+    color: @color7;
+    border-radius: 15px;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.hibButton {
+    background-color: @color4;
+    font-size: 30px;
+    margin: 3px;
+    color: @color7;
+    padding-right: 3px;
+    padding-left: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.hibButton:hover {
+    background-color: @color1;
+    font-size: 30px;
+    border-radius: 15px;
+    margin: 3px;
+    color: @color7;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.RebootButton {
+    background-color: @color4;
+    font-size: 30px;
+    margin: 3px;
+    color: @color7;
+    padding-right: 3px;
+    padding-left: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.RebootButton:hover {
+    background-color: @color1;
+    border-radius: 15px;
+    margin: 3px;
+    color: @color7;
+    font-size: 30px;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.powerOffButton {
+    background-color: @color4;
+    margin: 3px;
+    color: @color7;
+    font-size: 30px;
+    padding-right: 3px;
+    padding-left: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.powerOffButton:hover {
+    background-color: @color1;
+    border-radius: 15px;
+    margin: 3px;
+    color: @color7;
+    font-size: 30px;
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+
+.powerSettings {
+    font-size: 17px;
+    margin: 3px;
+    color: @color1;
+    background-color: @color4;
+    border-radius: 15px;
+    padding-right: 10px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding-left: 10px;
+}
+
+
+.powerSettings:hover {
+    font-size: 17px;
+    margin: 3px;
+    color: @color4;
+    background-color: @color1;
+    border-radius: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.workspace1,
+.workspace2,
+.workspace3,
+.workspace4,
+.workspace5 {
+
+    border-radius: 5px;
+    padding: 4px 8px;
+    margin: 3px;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+}
+
+.workspace1:hover,
+.workspace2:hover,
+.workspace3:hover,
+.workspace4:hover,
+.workspace5:hover {
+    background-color: @color3;
+    border-radius: 10px;
+    color: @color2;
+}
+
+
+
+.workspace1.active, .workspace2.active, .workspace3.active, 
+.workspace4.active, .workspace5.active {
+    background-color: @color7;
+    margin: 3px;
+    border-radius: 15px;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
+}
+
+.workspace1:hover, .workspace2:hover, .workspace3:hover, 
+.workspace4:hover, .workspace5:hover {
+    background-color: @color5;
+    margin: 3px;
+
+}
+
+.workspace1.active:hover, .workspace2.active:hover, 
+.workspace3.active:hover, .workspace4.active:hover, 
+.workspace5.active:hover {
+    background-color: @color1;
+    margin: 3px;
+
+}
+
+
+
+.playPauseButton {
+    background-color: @color4;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    padding: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.playPauseButton:hover {
+    background-color: @color1;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    padding: 3px;
+
+}
+
+.resetDropdownButton {
+    background-color: @color4;
+    color: white;
+    border-radius: 15px;
+    font-size: 30px;
+    padding: 3px;
+
+}
+
+.resetDropdownButton:hover {
+    background-color: @color1;
+    color: white;
+    border-radius: 15px;
+    font-size: 30px;
+    padding: 3px;
+
+}
+
+.backwardButton {
+    background-color: @color4;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    padding: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
+}
+
+.backwardButton:hover {
+    background-color: @color1;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    padding: 3px;
+
+}
+
+.forwardButton {
+    background-color: @color4;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding: 3px;
+}
+
+.forwardButton:hover {
+    background-color: @color1;
+    font-size: 30px;
+    color: white;
+    border-radius: 15px;
+    padding: 3px;
+}
+
+
+
+.SearchEntry {
+    background-color: @color4;
+    border-radius: 20px;
+    border: 0px solid @color7;
+    color: @color7;
+    outline: none;
+}
+
+.SearchEntry.active {
+    background-color: @color1;
+    color: white;
+    border: 0px solid @color7;
+    border-radius: 20px;
+    outline: none;
+}
+
+
+
+.BarImage {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.VolumeWindow {
+    background-color: @color4;
+    font-size: 20px;
+}
+
+.SearchWindow {
+    background-color: @color4;
+    border-radius: 6px;
+    outline: none;
+    border: none;
+}
+
+.SearchWindow active {
+    background-color: @color1;
+    border-radius: 6px;
+    outline: none;
+    border: none;
+}
+
+.DateWindow {
+    background-color: @color4;
+    color: white;
+}
+
+.PowerWindow {
+    background-color: @color4;
+    color: white;
+
+}
+
+.MediaWindow {
+    background-color: @color4;
+
+}
+
+.window {
+    background-color: @color4;
+    border-radius: 20px;
+    border: 1px solid @color1;
+}
+
+tooltip {
+    background-color: @color4;
+    color: @color7;
+    border-radius: 22px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: @color1;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+}
