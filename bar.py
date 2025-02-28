@@ -1,19 +1,25 @@
 import gi
 gi.require_version("GtkLayerShell", "0.1")
 gi.require_version("Gtk", "3.0")
-import cairo
-from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango, GtkLayerShell
+from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, GtkLayerShell
 import subprocess
-import sys
-from media import MediaPlayerMonitor
 import os
 import time
+from media import MediaPlayerMonitor
+from threading import Timer 
+from buttons import Buttons
+from layouts import LayOuts
+from labels import Labels
+from dropdowns import DropDowns
+from scales import Scales
+from images import Images
+from actions import *
 from network import ssid, get_network
 from date import get_calendar_html
 
 
 
-class MyWindow(Gtk.Window):
+class FluxBar(Gtk.Window):
     def __init__(self):
         super().__init__(title="Bar")
         self.initUI()
@@ -49,22 +55,38 @@ class MyWindow(Gtk.Window):
 
 
         self.media = MediaPlayerMonitor()
-        self.dropdown_image = Gtk.Image()
+        self.images = Images()
         
-        self.dropdown_image.get_style_context().add_class('DropdownImage')
-        self.bar_image = Gtk.Image()
-        self.bar_image.get_style_context().add_class('BarImage')
-
 
         GLib.timeout_add(100, self.update_image)
 
-        self.labels()
-        self.buttons()
- 
-        self.show_network()
-        self.layouts()
+        self.labels = Labels()
+
+        
+        
+        self.scales = Scales()
+        
+        button_actions = [lambda button=None: self.media_dropdown(button), lambda button: workspace_1(button),
+                lambda button=None: workspace_2(button), lambda button=None: workspace_3(button),
+                lambda button=None: workspace_4(button), lambda button=None: workspace_5(button),
+                lambda button=None: pause_play_action_(button), lambda button=None: forward_action(button),
+                lambda button=None: backward_action(button), lambda button=None: reset_action(button),
+                lambda button=None: self.power_dropdown(button), lambda button=None: self.power_off(button),
+                lambda button=None: self.reset(button), lambda button=None: self.hibernate(button),
+                lambda button=None: self.lock(button), lambda button=None: self.date_dropdown(button),
+                lambda button=None: self.volume_dropdown(button), lambda button=None: self.search_dropdown(button)]
+        
+        self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
+
+
+
+        self.poll_active_workspace()
+        
+        self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
+        
         self.update_title()
 
+        
         GLib.timeout_add(100, self.update_volume)
 
         GLib.timeout_add(100, self.update_date)
@@ -86,136 +108,6 @@ class MyWindow(Gtk.Window):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
     )
 
-    def layouts(self):
-        self.main_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.add(self.main_box)
-
-        self.left_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.middle_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.right_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-
-        self.left_spacer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.right_spacer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-
-        self.main_box.pack_start(self.left_box, False, False, 0)
-        self.main_box.pack_start(self.left_spacer, True, True, 0)
-        self.main_box.pack_start(self.middle_box, False, False, 0)
-        self.main_box.pack_start(self.right_spacer, True, True, 20)
-        self.main_box.pack_start(self.right_box, False, False, 0)
-
-        self.middle_box.set_halign(Gtk.Align.CENTER)
-
-
-        for button in self.left_buttons:
-            self.left_box.pack_start(button, False, False, 0)
-
-        for button in self.middle_buttons:
-            self.middle_box.pack_start(button, True, False, 0)
-            
-        self.right_box.pack_start(self.network_label, False, False, 0)
-
-        for button in self.right_buttons:
-            self.right_box.pack_start(button, False, False, 0)
-    
-    def buttons(self):
-        self.left_buttons = []
-        self.right_buttons = []
-        self.middle_buttons = []
-
-        self.time_button = Gtk.Button()
-        self.time_button.get_style_context().add_class('timeButton')
-        self.time_button.connect('clicked', self.date_dropdown)
-        self.right_buttons.append(self.time_button)
-            
-        self.middle_buttons.append(self.bar_image)
-        
-            
-        self.media_button = Gtk.Button()
-        self.media_button.get_style_context().add_class('mediaButton')
-        self.media_button.connect("clicked", self.media_dropdown)
-        
-        self.middle_buttons.append(self.media_button)
-        
-        self.play_pause_button = Gtk.Button()
-        self.play_pause_button.get_style_context().add_class('playPauseButton')
-        self.play_pause_button.connect('clicked', self.pause_play_action_)
-
-        self.forward_button = Gtk.Button(label = '')
-        self.forward_button.get_style_context().add_class('forwardButton')
-        self.forward_button.connect('clicked', self.forward_action)
-        
-        self.backward_button = Gtk.Button(label = '')
-        self.backward_button.get_style_context().add_class('backwardButton')
-        self.backward_button.connect('clicked', self.backward_action)
-        
-        
-        self.reset_button = Gtk.Button(label = '󱞳')
-        self.reset_button.get_style_context().add_class('resetDropdownButton')
-        self.reset_button.connect('clicked', self.reset_action)
-    
-        self.volume_control = Gtk.Button(label = '󱄡')
-        self.volume_control.get_style_context().add_class('VolumeControlButton')
-        self.volume_control.connect('clicked', self.volume_dropdown)
-        self.right_buttons.append(self.volume_control)
-        
-        
-        self.workspace1 = Gtk.Button(label = '󰤂')
-        self.workspace1.get_style_context().add_class('workspace1')
-        self.workspace1.connect('clicked', self.workspace_1)
-        
-        
-        self.workspace2 = Gtk.Button(label = '󰤂')
-        self.workspace2.get_style_context().add_class('workspace2')
-        self.workspace2.connect('clicked', self.workspace_2)
-        
-        
-        self.workspace3 = Gtk.Button(label = '󰤂')
-        self.workspace3.get_style_context().add_class('workspace3')
-        self.workspace3.connect('clicked', self.workspace_3)
-        
-        
-        self.workspace4 = Gtk.Button(label = '󰤂')
-        self.workspace4.get_style_context().add_class('workspace4')
-        self.workspace4.connect('clicked', self.workspace_4)
-        
-        
-        self.workspace5 = Gtk.Button(label = '󰤂')
-        self.workspace5.get_style_context().add_class('workspace5')
-        self.workspace5.connect('clicked', self.workspace_5)
-        
-        
-        self.left_buttons.append(self.workspace1)
-        self.left_buttons.append(self.workspace2)
-        self.left_buttons.append(self.workspace3)
-        self.left_buttons.append(self.workspace4)
-        self.left_buttons.append(self.workspace5)
-
-        self.power_settings = Gtk.Button(label = '󰐦')
-        self.power_settings.get_style_context().add_class('powerSettings')
-        self.power_settings.connect('clicked', self.power_dropdown)
-        self.right_buttons.append(self.power_settings)
-
-        self.power_off_button = Gtk.Button(label = '󰐥')
-        self.power_off_button.get_style_context().add_class('powerOffButton')
-        self.power_off_button.connect('clicked', self.power_off)
-        
-        self.reboot_button = Gtk.Button(label = '󰜉')
-        self.reboot_button.get_style_context().add_class('RebootButton')
-        self.reboot_button.connect('clicked', self.reset)
-        
-        self.hib_button = Gtk.Button(label = '󰤁')
-        self.hib_button.get_style_context().add_class('hibButton')
-        self.hib_button.connect('clicked', self.hibernate)
-        
-        self.lock_button = Gtk.Button(label = '󰌾')
-        self.lock_button.get_style_context().add_class('LockButton')
-        self.lock_button.connect('clicked', self.lock)
-
-        self.search_button = Gtk.Button(label = '󰜏')
-        self.search_button.set_tooltip_text('Search from FireFox')
-        self.search_button.get_style_context().add_class('SearchButton')
-        self.search_button.connect('clicked', self.search_dropdown)
-        self.left_buttons.append(self.search_button)
 
     def entry(self):
         self.entry_ = Gtk.Entry()
@@ -227,100 +119,24 @@ class MyWindow(Gtk.Window):
         subprocess.run(['firefox', f'https://www.google.com/search?q={widget.get_text()}'])
         widget.set_text('')
 
-    def power_off(self, button):
-        subprocess.run(['shutdown', 'now'])
-    
-    def reset(self, button):
-        subprocess.run(['reboot'])
-    
-    def lock(self, button):
-        subprocess.run(['hyprlock'])
-    
-    def hibernate(self, button):
-        subprocess.run(['systemctl', 'hibernate'])
 
-    def switch_workspace(self, workspace_num):
-        subprocess.run(['hyprctl', 'dispatch', 'workspace', str(workspace_num)])
-        
-        self.set_active_workspace(workspace_num)
+    def poll_active_workspace(self):
+        try:
+            result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
+            current_workspace = int(result.stdout.split()[1])
+            set_active_workspace(current_workspace, self.buttons_)
+        except (IndexError, ValueError):
+            pass
 
-    def workspace_1(self, button):
-        self.switch_workspace(1)
+        Timer(1, self.poll_active_workspace).start()
 
-    def workspace_2(self, button):
-        self.switch_workspace(2)
-
-    def workspace_3(self, button):
-        self.switch_workspace(3)
-
-    def workspace_4(self, button):
-        self.switch_workspace(4)
-
-    def workspace_5(self, button):
-        self.switch_workspace(5)
-
-    def set_active_workspace(self, workspace_num):
-        self.workspace1.get_style_context().remove_class('active')
-        self.workspace2.get_style_context().remove_class('active')
-        self.workspace3.get_style_context().remove_class('active')
-        self.workspace4.get_style_context().remove_class('active')
-        self.workspace5.get_style_context().remove_class('active')
-
-        if workspace_num == 1:
-            self.workspace1.get_style_context().add_class('active')
-        elif workspace_num == 2:
-            self.workspace2.get_style_context().add_class('active')
-        elif workspace_num == 3:
-            self.workspace3.get_style_context().add_class('active')
-        elif workspace_num == 4:
-            self.workspace4.get_style_context().add_class('active')
-        elif workspace_num == 5:
-            self.workspace5.get_style_context().add_class('active')
-
-    def volume_scale(self):
-        self.volume_scale_ = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 1)
-        self.volume_scale_.get_style_context().add_class('VolumeScale')
-        self.volume_scale_.set_value(50)
-        self.volume_scale_.set_vexpand(True)
-        self.volume_scale_.set_hexpand(True)
-        self.volume_scale_.set_size_request(200, 50)
-        self.volume_scale_.set_digits(0)
-        self.volume_scale_.set_draw_value(False)
-
-        self.volume_scale_.connect("value-changed", self.on_volume_value_changed)
-
-    def mic_scale(self):
-        self.mic_scale_ = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 1)
-        self.mic_scale_.get_style_context().add_class('MicScale')
-        self.mic_scale_.set_value(50)
-        self.mic_scale_.set_hexpand(False)
-        self.mic_scale_.set_size_request(200, 50)
-        self.mic_scale_.set_vexpand(True)
-        self.mic_scale_.set_digits(0)
-        self.mic_scale_.set_draw_value(False)
-
-        self.mic_scale_.connect("value-changed", self.on_mic_value_changed)
-
-
-
-    def on_volume_value_changed(self, widget):
-        value = max(0, min(100, int(widget.get_value())))
-
-        subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{value}%'])
-        
-    def on_mic_value_changed(self, widget):
-        value = max(0, min(100, int(widget.get_value())))
-
-        subprocess.run(['pactl', 'set-source-volume', '@DEFAULT_SOURCE@', f'{value}%'])
-        
-        
     def media_dropdown(self, button):
         if hasattr(self, "media_window") and self.media_window:
             self.media_window.destroy()
             self.media_window = None
             return
         
-        self.buttons()
+        self.buttons_.media_buttons(self.media_dropdown, pause_play_action_, forward_action, backward_action, reset_action)
         self.media_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.media_window.get_style_context().add_class('MediaWindow')
         
@@ -341,20 +157,20 @@ class MyWindow(Gtk.Window):
 
         fixed = Gtk.Fixed()
 
-        self.dropdown_title_label.set_halign(Gtk.Align.START)
+        self.labels.dropdown_title_label.set_halign(Gtk.Align.START)
 
-        hig_box.pack_start(self.dropdown_image, True, True, 0)
+        hig_box.pack_start(self.images.dropdown_image, True, True, 0)
         hig_box.pack_start(ver_box, False, False, 0)
 
 
-        ver_box.pack_start(self.dropdown_artist, False, False, 10)
-        self.dropdown_title_label.set_halign(Gtk.Align.CENTER) 
-        ver_box.pack_start(self.dropdown_title_label, False, False, 0)
+        ver_box.pack_start(self.labels.dropdown_artist, False, False, 10)
+        self.labels.dropdown_title_label.set_halign(Gtk.Align.CENTER) 
+        ver_box.pack_start(self.labels.dropdown_title_label, False, False, 0)
         
-        fixed.put(self.reset_button, 70, 40)
-        fixed.put(self.forward_button, 100, 10)
-        fixed.put(self.play_pause_button, 70, 10)
-        fixed.put(self.backward_button, 40, 10)
+        fixed.put(self.buttons_.reset_button, 70, 40)
+        fixed.put(self.buttons_.forward_button, 100, 10)
+        fixed.put(self.buttons_.play_pause_button, 70, 10)
+        fixed.put(self.buttons_.backward_button, 40, 10)
         
         
         ver_box.pack_start(fixed, True, True, 0)
@@ -407,7 +223,7 @@ class MyWindow(Gtk.Window):
 
         hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
-        hig_box.pack_start(self.date_label, False, False, 0)
+        hig_box.pack_start(self.labels.date_label, False, False, 0)
 
         self.date_window.add(hig_box)
         self.date_window.show_all()
@@ -418,7 +234,7 @@ class MyWindow(Gtk.Window):
             self.power_window = None
             return
         
-        self.buttons()
+        self.buttons_.powerSettingsButtons(self.power_dropdown, power_off, reset, hibernate, lock)
         
         self.power_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.power_window.get_style_context().add_class('PowerWindow')
@@ -437,17 +253,17 @@ class MyWindow(Gtk.Window):
         grid = Gtk.Grid()
 
 
-        grid.attach(self.power_off_button, 1, 0, 2, 1)
-        grid.attach(self.power_off_label, 0, 0, 1, 1)
+        grid.attach(self.buttons_.power_off_button, 1, 0, 2, 1)
+        grid.attach(self.labels.power_off_label, 0, 0, 1, 1)
 
-        grid.attach(self.reboot_button, 1, 1, 2, 1)
-        grid.attach(self.reset_label, 0, 1, 1, 1)
+        grid.attach(self.buttons_.reboot_button, 1, 1, 2, 1)
+        grid.attach(self.labels.reset_label, 0, 1, 1, 1)
         
-        grid.attach(self.lock_button, 1, 2, 2, 1)
-        grid.attach(self.lock_label, 0, 2, 1, 1)
+        grid.attach(self.buttons_.lock_button, 1, 2, 2, 1)
+        grid.attach(self.labels.lock_label, 0, 2, 1, 1)
         
-        grid.attach(self.hib_button, 1, 3, 2, 1)
-        grid.attach(self.hibernate_label, 0, 3, 1, 1)
+        grid.attach(self.buttons_.hib_button, 1, 3, 2, 1)
+        grid.attach(self.labels.hibernate_label, 0, 3, 1, 1)
 
         self.power_window.add(grid)
         
@@ -455,11 +271,11 @@ class MyWindow(Gtk.Window):
 
     def volume_dropdown(self, button):
         if hasattr(self, "volume_window") and self.volume_window:
-            if self.volume_scale_ and self.mic_scale_:
-                self.mic_scale_.destroy()
-                self.volume_scale_.destroy()
-                self.volume_scale_ = None
-                self.mic_scale_ = None
+            if self.scales.volume_scale_ and self.scales.mic_scale_:
+                self.scales.mic_scale_.destroy()
+                self.scales.volume_scale_.destroy()
+                self.scales.volume_scale_ = None
+                self.scales.mic_scale_ = None
                 
             self.volume_window.destroy()
             self.volume_window = None
@@ -467,8 +283,8 @@ class MyWindow(Gtk.Window):
             return
 
 
-        self.volume_scale()
-        self.mic_scale()
+        self.scales.volume_scale()
+        self.scales.mic_scale()
 
 
         self.volume_window = Gtk.Window(type=Gtk.WindowType.POPUP)
@@ -490,104 +306,43 @@ class MyWindow(Gtk.Window):
 
 
         hig_box.pack_start(ver_box, False, False, 0)
-        ver_box.pack_start(self.volume_scale_, False, True, 0)
+        ver_box.pack_start(self.scales.volume_scale_, False, True, 0)
 
-        ver_box.pack_start(self.volume_label, False, False, 0)
-        ver_box.pack_start(self.mic_scale_, False, False, 0)
+        ver_box.pack_start(self.labels.volume_label, False, False, 0)
+        ver_box.pack_start(self.scales.mic_scale_, False, False, 0)
         
-        ver_box.pack_start(self.mic_label, False, False, 0)
+        ver_box.pack_start(self.labels.mic_label, False, False, 0)
         
 
         self.volume_window.add(hig_box)
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
 
-    def create_circular_pixbuf(self, pixbuf):
-        width, height = pixbuf.get_width(), pixbuf.get_height()
-        radius = min(width, height) // 2
-
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
-        ctx = cairo.Context(surface)
-
-        ctx.set_source_rgba(0, 0, 0, 0)
-        ctx.set_operator(cairo.Operator.SOURCE)
-        ctx.paint()
-
-        ctx.set_operator(cairo.Operator.OVER)
-        ctx.arc(width // 2, height // 2, radius, 0, 2 * 3.1416)
-        ctx.clip()
-
-        gdk_cairo = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-        ctx.set_source_surface(gdk_cairo, 0, 0)
-        ctx.paint()
-
-        return Gdk.pixbuf_get_from_surface(surface, 0, 0, width, height)
-
-
-    def create_eaten_pixbuf(self, pixbuf):
-        width, height = pixbuf.get_width(), pixbuf.get_height()
-
-        corner_radius = 30
-
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
-        ctx = cairo.Context(surface)
-
-        ctx.set_source_rgba(0, 0, 0, 0)
-        ctx.set_operator(cairo.Operator.SOURCE)
-        ctx.paint()
-
-        ctx.set_operator(cairo.Operator.OVER)
-        ctx.move_to(corner_radius, 0)
-        ctx.line_to(width - corner_radius, 0)
-        ctx.arc(width - corner_radius, corner_radius, corner_radius, 3 * 3.1416 / 2, 2 * 3.1416)
-        ctx.line_to(width, height - corner_radius)
-        ctx.arc(width - corner_radius, height - corner_radius, corner_radius, 0, 3.1416 / 2)
-        ctx.line_to(corner_radius, height)
-        ctx.arc(corner_radius, height - corner_radius, corner_radius, 3.1416 / 2, 3.1416)
-        ctx.line_to(0, corner_radius)
-        ctx.arc(corner_radius, corner_radius, corner_radius, 3.1416, 3 * 3.1416 / 2)
-        ctx.close_path()
-
-        bite_radius = corner_radius // 2  
-        bite_angle_start = 1.5 
-        bite_angle_end = 2.0   
-
-        ctx.arc(corner_radius, corner_radius, bite_radius, bite_angle_start * 3.1416, bite_angle_end * 3.1416)
-        ctx.line_to(corner_radius, corner_radius)
-
-        ctx.clip()
-
-        gdk_cairo = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-        ctx.set_source_surface(gdk_cairo, 0, 0)
-
-        ctx.paint()
-
-        return Gdk.pixbuf_get_from_surface(surface, 0, 0, width, height)
-
     def update_volume(self):
-        if not hasattr(self, 'volume_scale_') or self.volume_scale_ is None:
+        if not hasattr(self.scales, 'volume_scale_') or self.scales.volume_scale_ is None:
             return True
         
-        value = int(self.volume_scale_.get_value())
+        value = int(self.scales.volume_scale_.get_value())
         
         if value == 0:
-            self.volume_label.set_text('󰕿')
+            self.labels.volume_label.set_text('󰕿')
         elif value <= 25:
-            self.volume_label.set_text('󰖀')
+            self.labels.volume_label.set_text('󰖀')
         elif value <= 50:
-            self.volume_label.set_text('󰕾')
+            self.labels.volume_label.set_text('󰕾')
         elif value <= 75:
-            self.volume_label.set_text('')  
+            self.labels.volume_label.set_text('')  
+
 
         return True
 
     def update_time(self):
         current_time = time.strftime('%H 󰇙 %M')
-        self.time_button.set_label(current_time)
+        self.buttons_.time_button.set_label(current_time)
 
     def update_date(self):
         date = get_calendar_html()
-        self.date_label.set_markup(date)
+        self.labels.date_label.set_markup(date)
 
 
     def update_image(self):
@@ -598,24 +353,24 @@ class MyWindow(Gtk.Window):
             thumbnail = self.media.art_url.replace('file:///', '/')
             if thumbnail and os.path.exists(thumbnail):
                 
-                self.dropdown_title_label.set_label(self.media.title_)
-                self.dropdown_artist.set_text(self.media.artist)
+                self.labels.dropdown_title_label.set_label(self.media.title_)
+                self.labels.dropdown_artist.set_text(self.media.artist)
                 self.media_tool_tip = f'Now Playing: {self.media.title_}\n          By\n{self.media.artist}'
                 
 
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 50, 50)
-                circular_pixbuf = self.create_circular_pixbuf(pixbuf)
+                circular_pixbuf = self.images.create_circular_pixbuf(pixbuf)
 
                 pixbuf_ = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
-                eaten_pixbuf = self.create_eaten_pixbuf(pixbuf_)
+                radius_pixbuf = self.images.create_radius_pixbuf(pixbuf_)
 
 
-                if circular_pixbuf and eaten_pixbuf:
-                    self.bar_image.set_from_pixbuf(circular_pixbuf)
-                    self.bar_image.set_has_tooltip(True)
-                    self.bar_image.connect("query-tooltip", self.media_tooltip)
+                if circular_pixbuf and radius_pixbuf:
+                    self.images.bar_image.set_from_pixbuf(circular_pixbuf)
+                    self.images.bar_image.set_has_tooltip(True)
+                    self.images.bar_image.connect("query-tooltip", self.media_tooltip)
 
-                    self.dropdown_image.set_from_pixbuf(eaten_pixbuf)
+                    self.images.dropdown_image.set_from_pixbuf(radius_pixbuf)
                 
                 else:
                     print("Error")
@@ -630,94 +385,41 @@ class MyWindow(Gtk.Window):
                 text = self.media.title_
         else:
             text = ''
-        self.media_button.set_label(str(text))
+        self.buttons_.media_button.set_label(str(text))
         
         return True
 
-    def forward_action(self, button):
-        self.media.forward_10_seconds()
-
-    def reset_action(self, button):
-        self.media.reset()
-
-    def backward_action(self, button):
-        self.media.backward_10_seconds()
-
-    def pause_play_action_(self, button):
-        self.media.pause_play_action()
 
     def update_pauseplay(self):
         if self.media.playback_status == 'Paused':
-            self.play_pause_button.set_label('')
+            self.buttons_.play_pause_button.set_label('')
         elif self.media.playback_status == 'Playing':
-            self.play_pause_button.set_label('')
+            self.buttons_.play_pause_button.set_label('')
     
         return True
-
-
-    def labels(self):
-        self.dropdown_title_label = Gtk.Label()
-        self.dropdown_title_label.get_style_context().add_class('DropdownTitle')
-        self.dropdown_title_label.set_hexpand(False)
-        self.dropdown_title_label.set_hexpand(False)
-        
-        self.dropdown_artist = Gtk.Label()
-        self.dropdown_artist.get_style_context().add_class('DropdownArtist')
-        
-        self.date_label = Gtk.Label()
-        self.date_label.get_style_context().add_class('Date')
-        
-        self.volume_label = Gtk.Label()
-        self.volume_label.get_style_context().add_class('VolumeLabel')
-        
-        self.mic_label = Gtk.Label(label = "󰍬")
-        self.mic_label.get_style_context().add_class('MicLabel')
-        
-        self.power_off_label = Gtk.Label(label = 'Power Off  ')
-        self.power_off_label.get_style_context().add_class('PowerOfflabel')
-        
-        self.reset_label = Gtk.Label(label = 'Reboot')
-        self.reset_label.get_style_context().add_class('Resetlabel')
-        
-        self.lock_label = Gtk.Label(label = 'Lock')
-        self.lock_label.get_style_context().add_class('LockLabel')
-        
-        self.hibernate_label = Gtk.Label(label = 'hibernate')
-        self.hibernate_label.get_style_context().add_class('HibernateLabel')
-        
-
     
-    def show_network(self):
-        self.network_label = Gtk.Label()
-        self.network_label.get_style_context().add_class('Wifi')
-        self.network_label.set_has_tooltip(True)
-        self.network_label.connect("query-tooltip", self.on_query_tooltip)
-        self.tooltip_text = "Checking..."
     
     def update_network(self):
         ssid_ = ssid()
         network = get_network()
 
         if network:
-            self.network_label.set_text("󰤨")
-            self.tooltip_text = ssid_
+            self.labels.network_label.set_text("󰤨")
+            self.labels.tooltip_text = ssid_
         else:
-            self.network_label.set_text("󰤭")
-            self.network_label.set_text("󰤭")
+            self.labels.network_label.set_text("󰤭")
+            self.labels.network_label.set_text("󰤭")
             
-            self.tooltip_text = "No Connection"
-
+            self.labels.tooltip_text = "No Connection"
+        
         return True
 
     def media_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         tooltip.set_text(self.media_tool_tip)
         return True
 
-    def on_query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        tooltip.set_text(self.tooltip_text)
-        return True
 
 
-win = MyWindow()
+win = FluxBar()
 win.connect("destroy", Gtk.main_quit)
 Gtk.main()
