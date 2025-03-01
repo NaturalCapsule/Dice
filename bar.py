@@ -1,21 +1,18 @@
 import gi
 gi.require_version("GtkLayerShell", "0.1")
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, GtkLayerShell
 import subprocess
-import os
-import time
+from gi.repository import Gtk, Gdk, GLib, GtkLayerShell
 from media import MediaPlayerMonitor
 from threading import Timer 
 from buttons import Buttons
 from layouts import LayOuts
 from labels import Labels
-from dropdowns import DropDowns
+# from dropdowns import DropDowns
 from scales import Scales
 from images import Images
+from updates import *
 from actions import *
-from network import ssid, get_network
-from date import get_calendar_html
 
 
 
@@ -58,7 +55,6 @@ class FluxBar(Gtk.Window):
         self.images = Images()
         
 
-        GLib.timeout_add(100, self.update_image)
 
         self.labels = Labels()
 
@@ -84,19 +80,19 @@ class FluxBar(Gtk.Window):
         
         self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
         
-        self.update_title()
 
-        
-        GLib.timeout_add(100, self.update_volume)
+        update_title(self.buttons_)
+    
+        GLib.timeout_add(100, update_volume, self.scales, self.labels)
 
-        GLib.timeout_add(100, self.update_date)
+        GLib.timeout_add(100, update_date, self.labels)
+        GLib.timeout_add(100, update_title, self.buttons_)
 
-        GLib.timeout_add(100, self.update_time)
-        GLib.timeout_add(100, self.update_image)
-        GLib.timeout_add(100, self.update_pauseplay)
-        GLib.timeout_add(100, self.update_network)
-        GLib.timeout_add(100, self.update_title)
 
+        GLib.timeout_add(100, update_time, self.buttons_)
+        GLib.timeout_add(100, update_image, self.labels, self.images)
+        GLib.timeout_add(100, update_pauseplay, self.buttons_)
+        GLib.timeout_add(100, update_network, self.labels)
 
     def load_css(self):
         css_provider = Gtk.CssProvider()
@@ -318,101 +314,6 @@ class FluxBar(Gtk.Window):
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
 
-    def update_volume(self):
-        if not hasattr(self.scales, 'volume_scale_') or self.scales.volume_scale_ is None:
-            return True
-        
-        value = int(self.scales.volume_scale_.get_value())
-        
-        if value == 0:
-            self.labels.volume_label.set_text('󰕿')
-        elif value <= 25:
-            self.labels.volume_label.set_text('󰖀')
-        elif value <= 50:
-            self.labels.volume_label.set_text('󰕾')
-        elif value <= 75:
-            self.labels.volume_label.set_text('')  
-
-
-        return True
-
-    def update_time(self):
-        current_time = time.strftime('%H 󰇙 %M')
-        self.buttons_.time_button.set_label(current_time)
-
-    def update_date(self):
-        date = get_calendar_html()
-        self.labels.date_label.set_markup(date)
-
-
-    def update_image(self):
-        self.media.monitor()
-        
-        
-        if self.media.current_player:
-            thumbnail = self.media.art_url.replace('file:///', '/')
-            if thumbnail and os.path.exists(thumbnail):
-                
-                self.labels.dropdown_title_label.set_label(self.media.title_)
-                self.labels.dropdown_artist.set_text(self.media.artist)
-                self.media_tool_tip = f'Now Playing: {self.media.title_}\n          By\n{self.media.artist}'
-                
-
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 50, 50)
-                circular_pixbuf = self.images.create_circular_pixbuf(pixbuf)
-
-                pixbuf_ = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
-                radius_pixbuf = self.images.create_radius_pixbuf(pixbuf_)
-
-
-                if circular_pixbuf and radius_pixbuf:
-                    self.images.bar_image.set_from_pixbuf(circular_pixbuf)
-                    self.images.bar_image.set_has_tooltip(True)
-                    self.images.bar_image.connect("query-tooltip", self.media_tooltip)
-
-                    self.images.dropdown_image.set_from_pixbuf(radius_pixbuf)
-                
-                else:
-                    print("Error")
-        return True
-
-    def update_title(self):
-        self.media.monitor()
-        if self.media.current_player:
-            if len(self.media.title_) >= 10:
-                text = f"{self.media.title_[:10]}..."
-            else:
-                text = self.media.title_
-        else:
-            text = ''
-        self.buttons_.media_button.set_label(str(text))
-        
-        return True
-
-
-    def update_pauseplay(self):
-        if self.media.playback_status == 'Paused':
-            self.buttons_.play_pause_button.set_label('')
-        elif self.media.playback_status == 'Playing':
-            self.buttons_.play_pause_button.set_label('')
-    
-        return True
-    
-    
-    def update_network(self):
-        ssid_ = ssid()
-        network = get_network()
-
-        if network:
-            self.labels.network_label.set_text("󰤨")
-            self.labels.tooltip_text = ssid_
-        else:
-            self.labels.network_label.set_text("󰤭")
-            self.labels.network_label.set_text("󰤭")
-            
-            self.labels.tooltip_text = "No Connection"
-        
-        return True
 
     def media_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         tooltip.set_text(self.media_tool_tip)
