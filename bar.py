@@ -1,8 +1,11 @@
 import gi
+import subprocess
+import os
 gi.require_version("GtkLayerShell", "0.1")
 gi.require_version("Gtk", "3.0")
-import subprocess
 from gi.repository import Gtk, Gdk, GLib, GtkLayerShell
+from configparser import ConfigParser
+
 from media import MediaPlayerMonitor
 from threading import Timer 
 from buttons import Buttons
@@ -19,6 +22,9 @@ from actions import *
 class FluxBar(Gtk.Window):
     def __init__(self):
         super().__init__(title="Bar")
+        self.config = ConfigParser()
+        self.config.read(f'/home/{os.getlogin()}/python/FlXBar/config/config.ini')
+    
         self.initUI()
         self.load_css()
         self.show_all()
@@ -28,11 +34,8 @@ class FluxBar(Gtk.Window):
             print("Error: Layer Shell not supported. Are you running Wayland?")
             exit(1)
 
-        GtkLayerShell.init_for_window(self)
-        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.TOP)
-        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
-        GtkLayerShell.auto_exclusive_zone_enable(self)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 10)
+        width_gap = 10
+        desired_width = 10
 
         self.set_decorated(False)
         self.set_keep_above(True)
@@ -41,24 +44,29 @@ class FluxBar(Gtk.Window):
 
         self.get_style_context().add_class('window')
 
-        screen = Gdk.Screen.get_default()
-        screen_width = screen.get_width()
-        screen_hight = screen.get_height()
-        
-        taskbar_height = 20
-        width_gap = 10
+        display = Gdk.Display.get_default()
+        if display:
+            monitor = display.get_monitor(0)
+            if monitor:
+                geometry = monitor.get_geometry()
+                screen_width = geometry.width
+            else:
+                print('no monitor detected!')
+        else:
+            print('no monitor detected!')
+            
 
-        self.set_default_size(screen_width - (2 * width_gap), taskbar_height)
+        
+        bar_height = 10
+
+        self.set_default_size(screen_width - (2 * width_gap), bar_height)
 
 
         self.media = MediaPlayerMonitor()
         self.images = Images()
         
-
-
         self.labels = Labels()
 
-        
         
         self.scales = Scales()
         
@@ -67,32 +75,40 @@ class FluxBar(Gtk.Window):
                 lambda button=None: workspace_4(button), lambda button=None: workspace_5(button),
                 lambda button=None: pause_play_action_(button), lambda button=None: forward_action(button),
                 lambda button=None: backward_action(button), lambda button=None: reset_action(button),
-                lambda button=None: self.power_dropdown(button), lambda button=None: self.power_off(button),
-                lambda button=None: self.reset(button), lambda button=None: self.hibernate(button),
-                lambda button=None: self.lock(button), lambda button=None: self.date_dropdown(button),
+                lambda button=None: self.power_dropdown(button), lambda button=None: power_off(button),
+                lambda button=None: reset(button), lambda button=None: hibernate(button),
+                lambda button=None: lock(button), lambda button=None: self.date_dropdown(button),
                 lambda button=None: self.volume_dropdown(button), lambda button=None: self.search_dropdown(button)]
         
         self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
 
-
-
         self.poll_active_workspace()
         
         self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
-        
-
-        update_title(self.buttons_)
     
-        GLib.timeout_add(100, update_volume, self.scales, self.labels)
 
+        pos = self.config.get('Appearance', 'position')
+    
+        text_pos = f"[{time.strftime('%H:%M:%S')}] [Info!] Using: ({pos}) as the bar position!"
+        print(text_pos)
+        
+        if pos == 'top':
+            self.layouts.top_position(parent = self, width_gap = width_gap)
+        elif pos == 'bottom':
+            self.layouts.bottom_position(parent = self, width_gap = width_gap)
+        elif pos == 'left':
+            self.layouts.left_position(parent = self, width_gap = width_gap, desired_width = desired_width)
+        elif pos == 'right':
+            self.layouts.right_position(parent = self, width_gap = width_gap, desired_width = desired_width)
+
+        GLib.timeout_add(100, update_volume, self.scales, self.labels)
         GLib.timeout_add(100, update_date, self.labels)
         GLib.timeout_add(100, update_title, self.buttons_)
-
-
         GLib.timeout_add(100, update_time, self.buttons_)
         GLib.timeout_add(100, update_image, self.labels, self.images)
         GLib.timeout_add(100, update_pauseplay, self.buttons_)
         GLib.timeout_add(100, update_network, self.labels)
+        GLib.timeout_add(100, update_title, self.buttons_)
 
     def load_css(self):
         css_provider = Gtk.CssProvider()
@@ -314,10 +330,6 @@ class FluxBar(Gtk.Window):
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
 
-
-    def media_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        tooltip.set_text(self.media_tool_tip)
-        return True
 
 
 

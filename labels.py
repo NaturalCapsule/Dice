@@ -47,6 +47,19 @@ class Labels:
         self.mic_label = Gtk.Label(label = "󰍬")
         self.mic_label.get_style_context().add_class('MicLabel')
 
+    # def show_network(self):
+    #     self.network_label = Gtk.Label()
+    #     self.network_label.get_style_context().add_class('Wifi')
+    #     self.network_label.set_has_tooltip(True)
+    #     self.network_label.connect("query-tooltip", self.on_query_tooltip)
+    #     self.tooltip_text = "Checking..."
+
+    # def on_query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+    #     tooltip.set_text(self.tooltip_text)
+    #     print(self.tooltip_text)
+        
+    #     return True
+
     def show_network(self):
         self.network_label = Gtk.Label()
         self.network_label.get_style_context().add_class('Wifi')

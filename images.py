@@ -12,7 +12,6 @@ class Images:
         self.dropdown_image.get_style_context().add_class('DropdownImage')
         self.bar_image = Gtk.Image()
         self.bar_image.get_style_context().add_class('BarImage')
-        
 
 
     def create_circular_pixbuf(self, pixbuf):

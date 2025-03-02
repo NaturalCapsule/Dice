@@ -109,6 +109,7 @@ class Buttons:
         self.media_button.get_style_context().add_class('mediaButton')
         self.media_button.connect("clicked", media_dropdown)
         
+        
         self.layout__.middle_buttons.append(self.media_button)
         
         self.play_pause_button = Gtk.Button()

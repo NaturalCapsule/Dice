@@ -384,11 +384,16 @@ button * {
 .workspace1.active, .workspace2.active, .workspace3.active, 
 .workspace4.active, .workspace5.active {
     background-color: @color7;
-    margin: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
     border-radius: 15px;
+    /* padding: 20px; */
     animation: gradient_f 20s ease-in infinite;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
+
+
+
 
 .workspace1:hover, .workspace2:hover, .workspace3:hover, 
 .workspace4:hover, .workspace5:hover {
