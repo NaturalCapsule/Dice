@@ -1,14 +1,14 @@
 import gi
 import subprocess
 import os
-gi.require_version("GtkLayerShell", "0.1")
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, GtkLayerShell
-from configparser import ConfigParser
 
+from gi.repository import Gtk, Gdk, GLib
+from configparser import ConfigParser
 from media import MediaPlayerMonitor
 from threading import Timer 
 from buttons import Buttons
+from entry import Entries
 from layouts import LayOuts
 from labels import Labels
 # from dropdowns import DropDowns
@@ -25,17 +25,13 @@ class FluxBar(Gtk.Window):
         self.config = ConfigParser()
         self.config.read(f'/home/{os.getlogin()}/python/FlXBar/config/config.ini')
     
+        self.load_config()
         self.initUI()
         self.load_css()
+        self.texts()
         self.show_all()
 
     def initUI(self):
-        if not GtkLayerShell.is_supported():
-            print("Error: Layer Shell not supported. Are you running Wayland?")
-            exit(1)
-
-        width_gap = 10
-        desired_width = 10
 
         self.set_decorated(False)
         self.set_keep_above(True)
@@ -54,12 +50,9 @@ class FluxBar(Gtk.Window):
                 print('no monitor detected!')
         else:
             print('no monitor detected!')
-            
-
         
-        bar_height = 10
 
-        self.set_default_size(screen_width - (2 * width_gap), bar_height)
+        self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
 
 
         self.media = MediaPlayerMonitor()
@@ -86,20 +79,17 @@ class FluxBar(Gtk.Window):
         
         self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
     
+        self.entries = Entries()
 
-        pos = self.config.get('Appearance', 'position')
-    
-        text_pos = f"[{time.strftime('%H:%M:%S')}] [Info!] Using: ({pos}) as the bar position!"
-        print(text_pos)
         
-        if pos == 'top':
-            self.layouts.top_position(parent = self, width_gap = width_gap)
-        elif pos == 'bottom':
-            self.layouts.bottom_position(parent = self, width_gap = width_gap)
-        elif pos == 'left':
-            self.layouts.left_position(parent = self, width_gap = width_gap, desired_width = desired_width)
-        elif pos == 'right':
-            self.layouts.right_position(parent = self, width_gap = width_gap, desired_width = desired_width)
+        if self.pos == 'top':
+            self.layouts.top_position(parent = self, width_gap = self.width_gap)
+        elif self.pos == 'bottom':
+            self.layouts.bottom_position(parent = self, width_gap = self.width_gap)
+        elif self.pos == 'left':
+            self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = bar_height)
+        elif self.pos == 'right':
+            self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = bar_height)
 
         GLib.timeout_add(100, update_volume, self.scales, self.labels)
         GLib.timeout_add(100, update_date, self.labels)
@@ -109,6 +99,12 @@ class FluxBar(Gtk.Window):
         GLib.timeout_add(100, update_pauseplay, self.buttons_)
         GLib.timeout_add(100, update_network, self.labels)
         GLib.timeout_add(100, update_title, self.buttons_)
+
+    def load_config(self):
+        self.pos = self.config.get('Appearance', 'position')
+        self.bar_height = self.config.getint('Appearance', 'BarHeight')
+        self.width_gap = self.config.getint('Appearance', 'widthGap')
+
 
     def load_css(self):
         css_provider = Gtk.CssProvider()
@@ -120,16 +116,9 @@ class FluxBar(Gtk.Window):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
     )
 
-
-    def entry(self):
-        self.entry_ = Gtk.Entry()
-        self.entry_.get_style_context().add_class('SearchEntry')
-        self.entry_.connect("activate", self.on_entry_activate)
-        self.entry_.grab_focus()
-
-    def on_entry_activate(self, widget):
-        subprocess.run(['firefox', f'https://www.google.com/search?q={widget.get_text()}'])
-        widget.set_text('')
+    def texts(self):
+        text_pos = f"[{time.strftime(r'%d %b %Y | %H:%M:%S')}] [Info!] Using: ({self.pos}) as the bar position!"
+        print(text_pos)
 
 
     def poll_active_workspace(self):
@@ -196,10 +185,10 @@ class FluxBar(Gtk.Window):
             self.search_window = None
             return
 
-        self.entry()
+        self.entries.search_entry()
 
         hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        hig_box.pack_start(self.entry_, False, False, 0)
+        hig_box.pack_start(self.entries.entry_, False, False, 0)
 
         self.search_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.search_window.set_decorated(False)
@@ -212,7 +201,7 @@ class FluxBar(Gtk.Window):
         
         self.search_window.get_style_context().add_class('SearchWindow')
 
-        
+
     def date_dropdown(self, button):
         if hasattr(self, "date_window") and self.date_window:
             self.date_window.destroy()
@@ -329,8 +318,6 @@ class FluxBar(Gtk.Window):
         self.volume_window.add(hig_box)
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
-
-
 
 
 win = FluxBar()

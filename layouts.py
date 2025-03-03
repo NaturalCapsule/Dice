@@ -1,5 +1,6 @@
 import gi
 import os
+import sys
 gi.require_version('Gtk', '3.0')
 gi.require_version("GtkLayerShell", "0.1")
 
@@ -11,6 +12,12 @@ class LayOuts:
     def __init__(self, parent, bar_image, network_label):
         self.config = ConfigParser()
         self.config.read(f'/home/{os.getlogin()}/python/FlXBar/config/config.ini')
+        if not GtkLayerShell.is_supported():
+            print("Error: Layer Shell not supported. if you on Hyprland run this command: GDK_BACKEND=wayland python bar.py")
+            # sys.exit()
+            exit(1)
+            
+        
         
         self.layouts(parent, bar_image, network_label)
 
