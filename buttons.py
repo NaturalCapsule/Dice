@@ -38,6 +38,7 @@ class Buttons:
     
     def Volume_controlButton(self, volume_dropdown):
         self.volume_control = Gtk.Button(label = '󱄡')
+
         self.volume_control.get_style_context().add_class('VolumeControlButton')
         self.volume_control.connect('clicked', volume_dropdown)
         self.layout__.right_buttons.append(self.volume_control)
@@ -76,7 +77,7 @@ class Buttons:
         self.workspace1 = Gtk.Button(label = '󰤂')
         self.workspace1.get_style_context().add_class('workspace1')
         self.workspace1.connect('clicked', lambda button: workspace_1(self))
-        
+    
         
         self.workspace2 = Gtk.Button(label = '󰤂')
         self.workspace2.get_style_context().add_class('workspace2')
@@ -106,13 +107,16 @@ class Buttons:
     
     def media_buttons(self, media_dropdown, pause_play_action, forward_action, backward_action, reset_action):
         self.media_button = Gtk.Button()
+        self.media_button.set_hexpand(False)
+        # self.media_button.get_child().set_angle(90)
+        # self.media_button.set_size_request(5, -1)
         self.media_button.get_style_context().add_class('mediaButton')
         self.media_button.connect("clicked", media_dropdown)
         
         
         self.layout__.middle_buttons.append(self.media_button)
         
-        self.play_pause_button = Gtk.Button()
+        self.play_pause_button = Gtk.Button('')
         self.play_pause_button.get_style_context().add_class('playPauseButton')
         self.play_pause_button.connect('clicked', pause_play_action)
 

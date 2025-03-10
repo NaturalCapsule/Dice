@@ -32,7 +32,6 @@ class FluxBar(Gtk.Window):
         self.show_all()
 
     def initUI(self):
-
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_resizable(False)
@@ -46,6 +45,7 @@ class FluxBar(Gtk.Window):
             if monitor:
                 geometry = monitor.get_geometry()
                 screen_width = geometry.width
+                screen_height = geometry.height
             else:
                 print('no monitor detected!')
         else:
@@ -54,13 +54,9 @@ class FluxBar(Gtk.Window):
 
         self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
 
-
         self.media = MediaPlayerMonitor()
         self.images = Images()
-        
         self.labels = Labels()
-
-        
         self.scales = Scales()
         
         button_actions = [lambda button=None: self.media_dropdown(button), lambda button: workspace_1(button),
@@ -86,10 +82,11 @@ class FluxBar(Gtk.Window):
             self.layouts.top_position(parent = self, width_gap = self.width_gap)
         elif self.pos == 'bottom':
             self.layouts.bottom_position(parent = self, width_gap = self.width_gap)
+        ## FIX IT!!!
         elif self.pos == 'left':
-            self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = bar_height)
+            self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
         elif self.pos == 'right':
-            self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = bar_height)
+            self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
 
         GLib.timeout_add(100, update_volume, self.scales, self.labels)
         GLib.timeout_add(100, update_date, self.labels)

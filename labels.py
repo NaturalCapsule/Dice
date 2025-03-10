@@ -1,6 +1,6 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 
 class Labels:
     def __init__(self):
@@ -19,13 +19,14 @@ class Labels:
         self.power_off_label.get_style_context().add_class('PowerOfflabel')
         
         self.reset_label = Gtk.Label(label = 'Reboot')
-        self.reset_label.get_style_context().add_class('Resetlabel')
+        self.reset_label.get_style_context().add_class('Resetlabel')        
         
         self.lock_label = Gtk.Label(label = 'Lock')
         self.lock_label.get_style_context().add_class('LockLabel')
-        
+
         self.hibernate_label = Gtk.Label(label = 'hibernate')
         self.hibernate_label.get_style_context().add_class('HibernateLabel')
+
 
     def dropdown_labels(self):
         self.dropdown_title_label = Gtk.Label()
@@ -39,6 +40,8 @@ class Labels:
     def date_label_(self):
         self.date_label = Gtk.Label()
         self.date_label.get_style_context().add_class('Date')
+
+    
     
     def volumeLabels(self):
         self.volume_label = Gtk.Label()
@@ -47,18 +50,6 @@ class Labels:
         self.mic_label = Gtk.Label(label = "󰍬")
         self.mic_label.get_style_context().add_class('MicLabel')
 
-    # def show_network(self):
-    #     self.network_label = Gtk.Label()
-    #     self.network_label.get_style_context().add_class('Wifi')
-    #     self.network_label.set_has_tooltip(True)
-    #     self.network_label.connect("query-tooltip", self.on_query_tooltip)
-    #     self.tooltip_text = "Checking..."
-
-    # def on_query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-    #     tooltip.set_text(self.tooltip_text)
-    #     print(self.tooltip_text)
-        
-    #     return True
 
     def show_network(self):
         self.network_label = Gtk.Label()

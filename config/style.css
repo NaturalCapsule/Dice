@@ -34,7 +34,7 @@ button * {
 
 .timeButton {
     font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: @color1;
     background-color: @color4;
     border-radius: 15px;
@@ -47,7 +47,7 @@ button * {
 
 .timeButton:hover {
     font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: @color4;
     background-color: @color1;
     border-radius: 15px;
@@ -104,11 +104,11 @@ button * {
 
 .mediaButton {
     margin: 3px;
+    font-size: 14px;
     background-color: @color4;
     font-family: "JetBrainsMono Nerd Font", sans-serif;
     padding: 4px;
     transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-
 }
 
 .mediaButton:hover {
@@ -387,7 +387,6 @@ button * {
     margin-top: 3px;
     margin-bottom: 3px;
     border-radius: 15px;
-    /* padding: 20px; */
     animation: gradient_f 20s ease-in infinite;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }

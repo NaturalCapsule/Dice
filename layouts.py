@@ -90,6 +90,7 @@ class LayOuts:
         parent.set_size_request(desired_width, -1)
 
         GtkLayerShell.auto_exclusive_zone_enable(parent)
+
     
     def right_position(self, parent, width_gap, desired_width):
         

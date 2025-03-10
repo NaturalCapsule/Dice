@@ -4,14 +4,13 @@ import subprocess
 import gi
 gi.require_version('Gtk', '3.0')
 
-
 class MediaPlayerMonitor:
     def __init__(self):
         self.session_bus = dbus.SessionBus()
         self.players = {}
         self.current_player = None
-        self.monitor() 
-
+        self.monitor()
+        
     def get_players(self):
         for service in self.session_bus.list_names():
             if service.startswith("org.mpris.MediaPlayer2."):
@@ -69,22 +68,26 @@ class MediaPlayerMonitor:
                 self.playback_status = f"{self.properties['playback_status']}"
                 self.art_url = f"{self.properties['art_url']}"
         else:
-            # print("No active media player found.")
-            return ''
+            return 'No active media player found'
         return True
 
 
+    # def pause_play_action(self):
+    #     # print(self.current_player)
+    #     if self.current_player:
+    #     # print(self.current_player)
+    #         subprocess.run(
+    # [
+    #     "dbus-send",
+    #     "--print-reply",
+    #     f"--dest={self.current_player.bus_name}",
+    #     "/org/mpris/MediaPlayer2",
+    #     "org.mpris.MediaPlayer2.Player.PlayPause",
+    # ],
+    # )
+
     def pause_play_action(self):
-        if self.current_player:
-            subprocess.run(
-    [
-        "dbus-send",
-        "--print-reply",
-        f"--dest={self.current_player.bus_name}",
-        "/org/mpris/MediaPlayer2",
-        "org.mpris.MediaPlayer2.Player.PlayPause",
-    ],
-)
+        subprocess.run(['playerctl', 'play-pause'])
 
     def forward_10_seconds(self):
         session_bus = dbus.SessionBus()
@@ -96,10 +99,9 @@ class MediaPlayerMonitor:
 
                 iface.Seek(10 * 1_000_000)
 
-                print("Skipped forward 10 seconds.")
+                print("Skipped forward 5 seconds.")
                 return
 
-        # print("No active media player found.")
 
     def backward_10_seconds(self):
         session_bus = dbus.SessionBus()
@@ -111,11 +113,8 @@ class MediaPlayerMonitor:
 
                 iface.Seek(-10 * 1_000_000)
 
-                print("Skipped forward 10 seconds.")
+                print("Skipped forward 5 seconds.")
                 return
-
-        # print("No active media player found.")
-        
 
     def reset(self):
         session_bus = dbus.SessionBus()
@@ -130,4 +129,3 @@ class MediaPlayerMonitor:
                 print("Video reset to the beginning.")
                 return
     
-        # print("No active media player found.")

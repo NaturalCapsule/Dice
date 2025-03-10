@@ -2,23 +2,14 @@ import time
 import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
-from gi.repository import GdkPixbuf, Gtk, Gdk
-from scales import Scales
-from labels import Labels
+from gi.repository import GdkPixbuf
 from media import MediaPlayerMonitor
 import os
-from images import Images
-
 from date import get_calendar_html
 from network import *
 
-# labels = Labels()
-# scales = Scales()
-# images = Images()
 
 media = MediaPlayerMonitor()
-
-    
 
 def update_volume(scales, labels):
     if not hasattr(scales, 'volume_scale_') or scales.volume_scale_ is None:
@@ -34,7 +25,6 @@ def update_volume(scales, labels):
         labels.volume_label.set_text('󰕾')
     elif value <= 75:
         labels.volume_label.set_text('')  
-    # print(value)
 
     return True
 
@@ -54,14 +44,12 @@ media_tool_tip = 'No Active media is playing!'
 def update_image(labels, images):
     media.monitor()
     
-    
     if media.current_player:
         thumbnail = media.art_url.replace('file:///', '/')
         if thumbnail and os.path.exists(thumbnail):
             
             labels.dropdown_title_label.set_label(media.title_)
             labels.dropdown_artist.set_text(media.artist)
-            ## FIX THIS
             global media_tool_tip
             media_tool_tip = f'Now Playing: {media.title_}\n          By\n{media.artist}'
 
@@ -75,49 +63,17 @@ def update_image(labels, images):
             if circular_pixbuf and radius_pixbuf:
                 images.bar_image.set_from_pixbuf(circular_pixbuf)
                 images.bar_image.set_has_tooltip(True)
-                # images.bar_images.set_tooltip(media_tool_tip)
                     
                 images.bar_image.connect("query-tooltip", media_tooltip)
 
 
                 images.dropdown_image.set_from_pixbuf(radius_pixbuf)
-
-                # images.dropdown_image.queue_draw()
-                # images.bar_image.queue_draw()
             
             else:
                 print("Error")
     return True
 
-# def update_image(labels, images):
-#     media.monitor()
 
-#     if media.current_player:
-#         thumbnail = media.art_url.replace('file:///', '/')
-#         if thumbnail and os.path.exists(thumbnail):
-#             labels.dropdown_title_label.set_label(media.title_)
-#             labels.dropdown_artist.set_text(media.artist)
-
-#             global media_tool_tip
-#             media_tool_tip = f'Now Playing: {media.title_}\n          By\n{media.artist}'
-
-#             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 50, 50)
-#             circular_pixbuf = images.create_circular_pixbuf(pixbuf)
-
-#             pixbuf_ = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
-#             radius_pixbuf = images.create_radius_pixbuf(pixbuf_)
-
-#             if circular_pixbuf and radius_pixbuf:
-#                 images.bar_image.set_from_pixbuf(circular_pixbuf)
-#                 images.bar_image.set_has_tooltip(True)
-
-#                 # Trigger tooltip refresh
-#                 images.dropdown_image.set_from_pixbuf(radius_pixbuf)
-#                 # images.bar_image.trigger_tooltip_query()
-
-#             else:
-#                 print("Error")
-#     return True
 
 def media_tooltip(widget, x, y, keyboard_mode, tooltip):
     global media_tool_tip
@@ -129,8 +85,8 @@ def media_tooltip(widget, x, y, keyboard_mode, tooltip):
 def update_title(buttons):
     media.monitor()
     if media.current_player:
-        if len(media.title_) >= 10:
-            text = f"{media.title_[:10]}..."
+        if len(media.title_) >= 5:
+            text = f"{media.title_[:5]}.."
         else:
             text = media.title_
     else:
@@ -141,7 +97,7 @@ def update_title(buttons):
 
 
 def update_pauseplay(buttons):
-    if media.playback_status == 'Paused':
+    if not media.current_player or media.playback_status == 'Paused':
         buttons.play_pause_button.set_label('')
     elif media.playback_status == 'Playing':
         buttons.play_pause_button.set_label('')
