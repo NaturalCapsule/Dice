@@ -2,6 +2,7 @@ from media import MediaPlayerMonitor
 import subprocess
 media = MediaPlayerMonitor()
 import time
+import sys
 
 
 
@@ -29,6 +30,11 @@ def lock(button):
 
 def hibernate(button):
     subprocess.run(['systemctl', 'hibernate'])
+
+def update_action(button):
+    # subprocess.Popen(['checkupdates', '|', 'wc -l'])
+    command = 'sudo pacman -Syu'
+    subprocess.Popen(["kitty", "-e", "sh", "-c", command])
 
 def switch_workspace(workspace_num, buttons):
     subprocess.run(['hyprctl', 'dispatch', 'workspace', str(workspace_num)])

@@ -391,9 +391,6 @@ button * {
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
-
-
-
 .workspace1:hover, .workspace2:hover, .workspace3:hover, 
 .workspace4:hover, .workspace5:hover {
     background-color: @color5;
@@ -484,7 +481,35 @@ button * {
     padding: 3px;
 }
 
+/* .PackageButton {
+    background-color: @color4;
+    border-radius: 20px;
+    border: 0px solid @color7;
+    color: @color7;
+    outline: none;
+} */
 
+.PackageButton {
+    /* font-size: 20px; */
+    color: @color1;
+    background-color: @color4;
+    border-radius: 15px;
+    margin: 3px;
+    padding-right: 10px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    padding-left: 10px;
+}
+
+
+.PackageButton:hover {
+    /* font-size: 20px; */
+    margin: 3px;
+    color: @color4;
+    background-color: @color1;
+    border-radius: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
 
 .SearchEntry {
     background-color: @color4;

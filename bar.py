@@ -1,12 +1,12 @@
 import gi
-import subprocess
+# import subprocess
 import os
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk, Gdk, GLib
 from configparser import ConfigParser
 from media import MediaPlayerMonitor
-from threading import Timer 
+# from threading import Timer 
 from buttons import Buttons
 from entry import Entries
 from layouts import LayOuts
@@ -17,7 +17,8 @@ from images import Images
 from updates import *
 from actions import *
 
-
+from hypr_workspaces import poll_active_workspace
+from timers import timers
 
 class FluxBar(Gtk.Window):
     def __init__(self):
@@ -50,8 +51,11 @@ class FluxBar(Gtk.Window):
                 print('no monitor detected!')
         else:
             print('no monitor detected!')
-        
 
+
+        Gtk.Settings.get_default().set_property("gtk-cursor-theme-name", "LyraQ-cursors")
+        Gtk.Settings.get_default().set_property("gtk-cursor-theme-size", 24)
+        
         self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
 
         self.media = MediaPlayerMonitor()
@@ -67,11 +71,11 @@ class FluxBar(Gtk.Window):
                 lambda button=None: self.power_dropdown(button), lambda button=None: power_off(button),
                 lambda button=None: reset(button), lambda button=None: hibernate(button),
                 lambda button=None: lock(button), lambda button=None: self.date_dropdown(button),
-                lambda button=None: self.volume_dropdown(button), lambda button=None: self.search_dropdown(button)]
+                lambda button=None: self.volume_dropdown(button), lambda button=None: self.search_dropdown(button), lambda button=None: update_action(button)]
         
-        self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
+        self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17], button_actions[18])
 
-        self.poll_active_workspace()
+        poll_active_workspace(set_active_workspace, self.buttons_)
         
         self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
     
@@ -82,25 +86,42 @@ class FluxBar(Gtk.Window):
             self.layouts.top_position(parent = self, width_gap = self.width_gap)
         elif self.pos == 'bottom':
             self.layouts.bottom_position(parent = self, width_gap = self.width_gap)
-        ## FIX IT!!!
         elif self.pos == 'left':
             self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
         elif self.pos == 'right':
             self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
-
-        GLib.timeout_add(100, update_volume, self.scales, self.labels)
-        GLib.timeout_add(100, update_date, self.labels)
-        GLib.timeout_add(100, update_title, self.buttons_)
-        GLib.timeout_add(100, update_time, self.buttons_)
-        GLib.timeout_add(100, update_image, self.labels, self.images)
-        GLib.timeout_add(100, update_pauseplay, self.buttons_)
-        GLib.timeout_add(100, update_network, self.labels)
-        GLib.timeout_add(100, update_title, self.buttons_)
+        else:
+            print("Invalid layout, the program will exit!")
+            exit(0)
+        
+        # GLib.timeout_add(100, update_volume, self.scales, self.labels)
+        # GLib.timeout_add(100, update_date, self.labels)
+        # GLib.timeout_add(100, update_time, self.buttons_)
+        # GLib.timeout_add(100, update_image, self.labels, self.images)
+        # GLib.timeout_add(100, update_title, self.buttons_)
+        # GLib.timeout_add(100, update_pauseplay, self.buttons_)
+        # GLib.timeout_add(100, update_network, self.labels)
+        # GLib.timeout_add(100, update_title, self.buttons_)
+        # GLib.timeout_add(100, fetch_updates_async, self.buttons_)
+        # self.timers()
+        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images)
 
     def load_config(self):
         self.pos = self.config.get('Appearance', 'position')
         self.bar_height = self.config.getint('Appearance', 'BarHeight')
         self.width_gap = self.config.getint('Appearance', 'widthGap')
+
+    # def timers(self):
+    #     GLib.timeout_add(100, update_volume, self.scales, self.labels)
+    #     GLib.timeout_add(1000, update_date, self.labels)
+    #     GLib.timeout_add(1000, update_time, self.buttons_)
+    #     GLib.timeout_add(100, update_image, self.labels, self.images, self.buttons_)
+    #     # GLib.timeout_add(100, update_title, self.buttons_)
+    #     GLib.timeout_add(100, update_pauseplay, self.buttons_)
+    #     GLib.timeout_add(100, update_network, self.labels)
+    #     # GLib.timeout_add(100, update_title, self.buttons_)
+    #     GLib.timeout_add(100, fetch_updates_async, self.buttons_)
+        # GLib.timeout_add(100, self.test_func)
 
 
     def load_css(self):
@@ -118,15 +139,53 @@ class FluxBar(Gtk.Window):
         print(text_pos)
 
 
-    def poll_active_workspace(self):
-        try:
-            result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
-            current_workspace = int(result.stdout.split()[1])
-            set_active_workspace(current_workspace, self.buttons_)
-        except (IndexError, ValueError):
-            pass
+    # def poll_active_workspace(self):
+    #     try:
+    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
+    #         current_workspace = int(result.stdout.split()[1])
+    #         print(current_workspace)
+    #         set_active_workspace(current_workspace, self.buttons_)
+    #     except (IndexError, ValueError):
+    #         pass
 
-        Timer(1, self.poll_active_workspace).start()
+    #     Timer(1, self.poll_active_workspace).start()
+
+    # def test_func(self):
+    #     try:
+    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
+    #         current_workspace = int(result.stdout.split()[1])
+    #         if current_workspace == 1:
+    #             lambda button=None: workspace_1(button)
+    #         elif current_workspace == 2:
+    #             lambda button=None: workspace_2(button)
+    #         elif current_workspace == 3:
+    #             lambda button=None: workspace_3(button)
+    #         elif current_workspace == 4:
+    #             lambda button=None: workspace_4(button)
+    #         elif current_workspace == 5:
+    #             lambda button=None: workspace_5(button)
+    #         else:
+    #             pass
+    #         # set_active_workspace(current_workspace, self.buttons_)
+    #     except (IndexError, ValueError):
+    #         pass
+
+    #     Timer(1, self.test_func).start()
+
+    # def poll_active_workspace(self):
+    #     try:
+    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
+    #         for line in result.stdout.split("\n"):
+    #             if "workspace ID" in line:
+    #                 current_workspace = int(result.stdout.split()[2])
+    #                 set_active_workspace(current_workspace, self.buttons_)
+    #                 break
+
+    #     except (IndexError, ValueError) as e:
+    #         pass
+
+    #     Timer(0.1, self.poll_active_workspace).start()
+
 
     def media_dropdown(self, button):
         if hasattr(self, "media_window") and self.media_window:

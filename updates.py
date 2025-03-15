@@ -7,7 +7,9 @@ from media import MediaPlayerMonitor
 import os
 from date import get_calendar_html
 from network import *
-
+import threading
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib
 
 media = MediaPlayerMonitor()
 
@@ -41,7 +43,7 @@ def update_date(labels):
 media_tool_tip = 'No Active media is playing!'
 
 
-def update_image(labels, images):
+def update_image(labels, images, buttons):
     media.monitor()
     
     if media.current_player:
@@ -71,6 +73,30 @@ def update_image(labels, images):
             
             else:
                 print("Error")
+
+            if len(media.title_) >= 5:
+                text = f"{media.title_[:5]}.."
+                buttons.media_button.set_label(str(text))
+            else:
+                text = media.title_
+                buttons.media_button.set_label(str(text))
+        else:
+            text = ''
+            buttons.media_button.set_label(text)
+
+
+
+            # if circular_pixbuf and radius_pixbuf:
+            #     images.bar_image.set_from_pixbuf(circular_pixbuf)
+            #     images.bar_image.set_has_tooltip(True)
+                    
+            #     images.bar_image.connect("query-tooltip", media_tooltip)
+
+
+            #     images.dropdown_image.set_from_pixbuf(radius_pixbuf)
+            
+            # else:
+            #     print("Error")
     return True
 
 
@@ -82,28 +108,58 @@ def media_tooltip(widget, x, y, keyboard_mode, tooltip):
 
 
 
-def update_title(buttons):
-    media.monitor()
-    if media.current_player:
-        if len(media.title_) >= 5:
-            text = f"{media.title_[:5]}.."
-        else:
-            text = media.title_
-    else:
-        text = ''
-    buttons.media_button.set_label(str(text))
-    
-    return True
+# def update_title(buttons):
+    # media.monitor()
+    # if media.current_player:
+        # if len(media.title_) >= 5:
+            # text = f"{media.title_[:5]}.."
+            # buttons.media_button.set_label(str(text))
+        # else:
+            # text = media.title_
+            # buttons.media_button.set_label(str(text))
+    # else:
+        # text = ''
+        # buttons.media_button.set_label(text)
+        
+    # buttons.media_button.set_label(str(text))
+    # return True
 
 
 def update_pauseplay(buttons):
     if not media.current_player or media.playback_status == 'Paused':
-        buttons.play_pause_button.set_label('')
-    elif media.playback_status == 'Playing':
+        # buttons.play_pause_button.set_label('')
         buttons.play_pause_button.set_label('')
+        
+    elif media.playback_status == 'Playing':
+        buttons.play_pause_button.set_label('')
+        
+        # buttons.play_pause_button.set_label('')
 
     return True
 
+def fetch_updates_async(buttons):
+    def run_checkupdates():
+        try:
+            process = subprocess.Popen(['pacman', '-Qqu'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate(timeout=5)
+
+            if stderr:  # If there's an error, set error message
+                GLib.idle_add(buttons.package_button_.set_label, "󰏖 | Error")
+                return
+
+            updates = stdout.strip().split('\n')
+            nums = str(len([pkg for pkg in updates if pkg]))  # Count non-empty lines
+
+            GLib.idle_add(buttons.package_button_.set_label, f'󰏖 | {nums}')
+
+        except subprocess.TimeoutExpired:
+            process.kill()
+            GLib.idle_add(buttons.package_button_.set_label, "󰏖 | Timeout")
+
+        except Exception as e:
+            GLib.idle_add(buttons.package_button_.set_label, f"󰏖 | Crash")
+
+    threading.Thread(target=run_checkupdates, daemon=True).start()
 
 def update_network(labels):
     ssid_ = ssid()

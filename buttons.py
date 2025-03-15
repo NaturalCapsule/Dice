@@ -10,12 +10,12 @@ class Layouts:
         self.middle_buttons = []
 
 class Buttons:
-    def __init__(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown):
+    def __init__(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages):
         self.layout__ = Layouts()
         
-        self.buttons(media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown)
+        self.buttons(media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages)
 
-    def buttons(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown):
+    def buttons(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages):
         # self.left_buttons = []
         # self.layout__.right_button = []
         # self.middle_buttons = []
@@ -25,7 +25,7 @@ class Buttons:
         self.workspace_buttons(workspace_1, workspace_2, workspace_3, workspace_4, workspace_5)
         self.timeButton(date_dropdown)
         self.searchButton(search_dropdown)
-
+        self.package_button(update_packages)
 
 
     def searchButton(self, search_dropdown):
@@ -108,8 +108,6 @@ class Buttons:
     def media_buttons(self, media_dropdown, pause_play_action, forward_action, backward_action, reset_action):
         self.media_button = Gtk.Button()
         self.media_button.set_hexpand(False)
-        # self.media_button.get_child().set_angle(90)
-        # self.media_button.set_size_request(5, -1)
         self.media_button.get_style_context().add_class('mediaButton')
         self.media_button.connect("clicked", media_dropdown)
         
@@ -132,6 +130,13 @@ class Buttons:
         self.reset_button = Gtk.Button(label = '󱞳')
         self.reset_button.get_style_context().add_class('resetDropdownButton')
         self.reset_button.connect('clicked', reset_action)
-        
+    
+    def package_button(self, update_packages):
+        self.package_button_ = Gtk.Button(label = 'Checking...')
+        # self.package_button_ = Gtk.Button(label = '󰏖')
+        self.package_button_.get_style_context().add_class('PackageButton')
+        self.package_button_.connect('clicked', update_packages)
+        self.layout__.left_buttons.append(self.package_button_)
+    
     def get_layout(self):
         return self.layout__
