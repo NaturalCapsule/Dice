@@ -1,16 +1,15 @@
 import time
 import gi
+import os
+import threading
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
-from gi.repository import GdkPixbuf
-from media import MediaPlayerMonitor
-import os
-from date import get_calendar_html
-from network import *
-import threading
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
-
+from gi.repository import GdkPixbuf
+from media import MediaPlayerMonitor
+from date import get_calendar_html
+from network import *
 media = MediaPlayerMonitor()
 
 def update_volume(scales, labels):
@@ -74,31 +73,66 @@ def update_image(labels, images, buttons):
             else:
                 print("Error")
 
-            if len(media.title_) >= 5:
-                text = f"{media.title_[:5]}.."
-                buttons.media_button.set_label(str(text))
-            else:
-                text = media.title_
-                buttons.media_button.set_label(str(text))
-        else:
-            text = ''
-            buttons.media_button.set_label(text)
-
-
-
-            # if circular_pixbuf and radius_pixbuf:
-            #     images.bar_image.set_from_pixbuf(circular_pixbuf)
-            #     images.bar_image.set_has_tooltip(True)
-                    
-            #     images.bar_image.connect("query-tooltip", media_tooltip)
-
-
-            #     images.dropdown_image.set_from_pixbuf(radius_pixbuf)
-            
-            # else:
-            #     print("Error")
+    #         if len(media.title_) >= 5:
+    #             # print(type(media.title_))
+    #             new_label = f"{media.title_[:5]}.."
+    #             if buttons.media_button.get_label() != new_label:
+    #                 buttons.media_button.set_label(new_label)
+    #             # buttons.media_button.set_label(f"{media.title_[:5]}..")
+    #         else:
+    #             # buttons.media_button.set_label(media.title_)
+    #             new_label = f"{media.title_}"
+    #             if buttons.media_button.get_label() != new_label:
+    #                 buttons.media_button.set_label(new_label)
+    #     else:
+    #         buttons.media_button.set_label('')
     return True
 
+# def update_image(labels, images, buttons):
+#     media.monitor()
+    
+#     if media.current_player:
+#         thumbnail = media.art_url.replace('file:///', '/')
+#         if thumbnail and os.path.exists(thumbnail):
+            
+#             labels.dropdown_title_label.set_label(media.title_)
+#             labels.dropdown_artist.set_text(media.artist)
+#             global media_tool_tip
+#             media_tool_tip = f'Now Playing: {media.title_}\n          By\n{media.artist}'
+
+#             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 50, 50)
+#             circular_pixbuf = images.create_circular_pixbuf(pixbuf)
+
+#             pixbuf_ = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
+#             radius_pixbuf = images.create_radius_pixbuf(pixbuf_)
+
+
+#             if circular_pixbuf and radius_pixbuf:
+#                 images.bar_image.set_from_pixbuf(circular_pixbuf)
+#                 images.bar_image.set_has_tooltip(True)
+                    
+#                 images.bar_image.connect("query-tooltip", media_tooltip)
+
+
+#                 images.dropdown_image.set_from_pixbuf(radius_pixbuf)
+            
+#             else:
+#                 print("Error")
+
+#             if len(media.title_) >= 5:
+#                 # print(type(media.title_))
+#                 # new_label = f"{media.title_[:5]}.."
+#                 # if buttons.media_button.get_label() != new_label:
+#                 #     buttons.media_button.set_label(new_label)
+#                 buttons.media_button.set_label(f"{media.title_[:5]}..")
+#             else:
+#                 # buttons.media_button.set_label(media.title_)
+#                     # new_label = f"{media.title_}"
+#                     # if buttons.media_button.get_label() != new_label:
+#                 buttons.media_button.set_label(media.title_)
+#         else:
+#             buttons.media_button.set_label('')
+#     return True
 
 
 def media_tooltip(widget, x, y, keyboard_mode, tooltip):
@@ -107,33 +141,32 @@ def media_tooltip(widget, x, y, keyboard_mode, tooltip):
     return True
 
 
-
-# def update_title(buttons):
-    # media.monitor()
-    # if media.current_player:
-        # if len(media.title_) >= 5:
-            # text = f"{media.title_[:5]}.."
-            # buttons.media_button.set_label(str(text))
-        # else:
-            # text = media.title_
-            # buttons.media_button.set_label(str(text))
-    # else:
-        # text = ''
-        # buttons.media_button.set_label(text)
-        
-    # buttons.media_button.set_label(str(text))
-    # return True
+def update_title(buttons):
+    media.monitor()
+    if media.current_player:
+        if len(media.title_) >= 5:
+            # print(type(media.title_))
+            new_label = f"{media.title_[:5]}.."
+            if buttons.media_button.get_label() != new_label:
+                buttons.media_button.set_label(new_label)
+            # buttons.media_button.set_label(f"{media.title_[:5]}..")
+        else:
+            # buttons.media_button.set_label(media.title_)
+            new_label = f"{media.title_}"
+            if buttons.media_button.get_label() != new_label:
+                buttons.media_button.set_label(new_label)
+    else:
+        buttons.media_button.set_label('')
+    return True
 
 
 def update_pauseplay(buttons):
     if not media.current_player or media.playback_status == 'Paused':
-        # buttons.play_pause_button.set_label('')
         buttons.play_pause_button.set_label('')
         
     elif media.playback_status == 'Playing':
         buttons.play_pause_button.set_label('')
         
-        # buttons.play_pause_button.set_label('')
 
     return True
 
@@ -143,7 +176,7 @@ def fetch_updates_async(buttons):
             process = subprocess.Popen(['pacman', '-Qqu'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             stdout, stderr = process.communicate(timeout=5)
 
-            if stderr:  # If there's an error, set error message
+            if stderr:
                 GLib.idle_add(buttons.package_button_.set_label, "󰏖 | Error")
                 return
 

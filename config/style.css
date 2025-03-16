@@ -383,7 +383,8 @@ button * {
 
 .workspace1.active, .workspace2.active, .workspace3.active, 
 .workspace4.active, .workspace5.active {
-    background-color: @color7;
+    /* background-color: @color7; */
+    color: @color1;
     margin-top: 3px;
     margin-bottom: 3px;
     border-radius: 15px;
@@ -401,7 +402,7 @@ button * {
 .workspace1.active:hover, .workspace2.active:hover, 
 .workspace3.active:hover, .workspace4.active:hover, 
 .workspace5.active:hover {
-    background-color: @color1;
+    background-color: @color7;
     margin: 3px;
 
 }
@@ -433,6 +434,7 @@ button * {
     border-radius: 15px;
     font-size: 30px;
     padding: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
 
 }
 
@@ -442,6 +444,7 @@ button * {
     border-radius: 15px;
     font-size: 30px;
     padding: 3px;
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
 
 }
 

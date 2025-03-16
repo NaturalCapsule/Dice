@@ -10,12 +10,12 @@ class Layouts:
         self.middle_buttons = []
 
 class Buttons:
-    def __init__(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages):
+    def __init__(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, update_packages):
         self.layout__ = Layouts()
         
-        self.buttons(media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages)
+        self.buttons(media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, update_packages)
 
-    def buttons(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, search_dropdown, update_packages):
+    def buttons(self, media_dropdown, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, pause_play_action, forward_action, backward_action, reset_action, power_dropdown, power_off, reset, hibernate, lock, date_dropdown, volume_dropdown, update_packages):
         # self.left_buttons = []
         # self.layout__.right_button = []
         # self.middle_buttons = []
@@ -24,16 +24,16 @@ class Buttons:
         self.powerSettingsButtons(power_dropdown, power_off, reset, hibernate, lock)
         self.workspace_buttons(workspace_1, workspace_2, workspace_3, workspace_4, workspace_5)
         self.timeButton(date_dropdown)
-        self.searchButton(search_dropdown)
+        # self.searchButton(search_dropdown)
         self.package_button(update_packages)
 
 
-    def searchButton(self, search_dropdown):
-        self.search_button = Gtk.Button(label = '󰜏')
-        self.search_button.set_tooltip_text('Search from FireFox')
-        self.search_button.get_style_context().add_class('SearchButton')
-        self.search_button.connect('clicked', search_dropdown)
-        self.layout__.left_buttons.append(self.search_button)
+    # def searchButton(self, search_dropdown):
+    #     self.search_button = Gtk.Button(label = '󰜏')
+    #     self.search_button.set_tooltip_text('Search from FireFox')
+    #     self.search_button.get_style_context().add_class('SearchButton')
+    #     self.search_button.connect('clicked', search_dropdown)
+    #     self.layout__.left_buttons.append(self.search_button)
     
     
     def Volume_controlButton(self, volume_dropdown):

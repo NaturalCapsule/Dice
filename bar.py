@@ -1,9 +1,8 @@
 import gi
-# import subprocess
 import os
 gi.require_version("Gtk", "3.0")
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk
 from configparser import ConfigParser
 from media import MediaPlayerMonitor
 # from threading import Timer 
@@ -71,10 +70,10 @@ class FluxBar(Gtk.Window):
                 lambda button=None: self.power_dropdown(button), lambda button=None: power_off(button),
                 lambda button=None: reset(button), lambda button=None: hibernate(button),
                 lambda button=None: lock(button), lambda button=None: self.date_dropdown(button),
-                lambda button=None: self.volume_dropdown(button), lambda button=None: self.search_dropdown(button), lambda button=None: update_action(button)]
-        
-        self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17], button_actions[18])
-
+                lambda button=None: self.volume_dropdown(button), lambda button=None: update_action(button)]
+        # , lambda button=None: self.search_dropdown(button)
+        self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
+# button_actions[17], 
         poll_active_workspace(set_active_workspace, self.buttons_)
         
         self.layouts = LayOuts(parent = self, network_label = self.labels.network_label, bar_image = self.images.bar_image)
@@ -94,34 +93,12 @@ class FluxBar(Gtk.Window):
             print("Invalid layout, the program will exit!")
             exit(0)
         
-        # GLib.timeout_add(100, update_volume, self.scales, self.labels)
-        # GLib.timeout_add(100, update_date, self.labels)
-        # GLib.timeout_add(100, update_time, self.buttons_)
-        # GLib.timeout_add(100, update_image, self.labels, self.images)
-        # GLib.timeout_add(100, update_title, self.buttons_)
-        # GLib.timeout_add(100, update_pauseplay, self.buttons_)
-        # GLib.timeout_add(100, update_network, self.labels)
-        # GLib.timeout_add(100, update_title, self.buttons_)
-        # GLib.timeout_add(100, fetch_updates_async, self.buttons_)
-        # self.timers()
-        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images)
+        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images)
 
     def load_config(self):
         self.pos = self.config.get('Appearance', 'position')
         self.bar_height = self.config.getint('Appearance', 'BarHeight')
         self.width_gap = self.config.getint('Appearance', 'widthGap')
-
-    # def timers(self):
-    #     GLib.timeout_add(100, update_volume, self.scales, self.labels)
-    #     GLib.timeout_add(1000, update_date, self.labels)
-    #     GLib.timeout_add(1000, update_time, self.buttons_)
-    #     GLib.timeout_add(100, update_image, self.labels, self.images, self.buttons_)
-    #     # GLib.timeout_add(100, update_title, self.buttons_)
-    #     GLib.timeout_add(100, update_pauseplay, self.buttons_)
-    #     GLib.timeout_add(100, update_network, self.labels)
-    #     # GLib.timeout_add(100, update_title, self.buttons_)
-    #     GLib.timeout_add(100, fetch_updates_async, self.buttons_)
-        # GLib.timeout_add(100, self.test_func)
 
 
     def load_css(self):
@@ -137,54 +114,6 @@ class FluxBar(Gtk.Window):
     def texts(self):
         text_pos = f"[{time.strftime(r'%d %b %Y | %H:%M:%S')}] [Info!] Using: ({self.pos}) as the bar position!"
         print(text_pos)
-
-
-    # def poll_active_workspace(self):
-    #     try:
-    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
-    #         current_workspace = int(result.stdout.split()[1])
-    #         print(current_workspace)
-    #         set_active_workspace(current_workspace, self.buttons_)
-    #     except (IndexError, ValueError):
-    #         pass
-
-    #     Timer(1, self.poll_active_workspace).start()
-
-    # def test_func(self):
-    #     try:
-    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
-    #         current_workspace = int(result.stdout.split()[1])
-    #         if current_workspace == 1:
-    #             lambda button=None: workspace_1(button)
-    #         elif current_workspace == 2:
-    #             lambda button=None: workspace_2(button)
-    #         elif current_workspace == 3:
-    #             lambda button=None: workspace_3(button)
-    #         elif current_workspace == 4:
-    #             lambda button=None: workspace_4(button)
-    #         elif current_workspace == 5:
-    #             lambda button=None: workspace_5(button)
-    #         else:
-    #             pass
-    #         # set_active_workspace(current_workspace, self.buttons_)
-    #     except (IndexError, ValueError):
-    #         pass
-
-    #     Timer(1, self.test_func).start()
-
-    # def poll_active_workspace(self):
-    #     try:
-    #         result = subprocess.run(['hyprctl', 'activeworkspace'], capture_output=True, text=True)
-    #         for line in result.stdout.split("\n"):
-    #             if "workspace ID" in line:
-    #                 current_workspace = int(result.stdout.split()[2])
-    #                 set_active_workspace(current_workspace, self.buttons_)
-    #                 break
-
-    #     except (IndexError, ValueError) as e:
-    #         pass
-
-    #     Timer(0.1, self.poll_active_workspace).start()
 
 
     def media_dropdown(self, button):
@@ -235,29 +164,30 @@ class FluxBar(Gtk.Window):
         self.media_window.add(hig_box)
         self.media_window.show_all()
 
-    def search_dropdown(self, button):
-        if hasattr(self, "search_window") and self.search_window:
-            self.search_window.destroy()
-            self.search_window = None
-            return
+    # def search_dropdown(self, button):
+    #     if hasattr(self, "search_window") and self.search_window:
+    #         self.search_window.destroy()
+    #         self.search_window = None
+    #         return
 
-        self.entries.search_entry()
+    #     self.entries.search_entry()
 
-        hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        hig_box.pack_start(self.entries.entry_, False, False, 0)
+    #     hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+    #     hig_box.pack_start(self.entries.entry_, False, False, 0)
 
-        self.search_window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        self.search_window.set_decorated(False)
-        self.search_window.set_resizable(False)
-        self.search_window.set_border_width(10)
+    #     self.search_window = Gtk.Window(type=Gtk.WindowType.POPUP)
+    #     self.search_window.set_decorated(False)
+    #     self.search_window.set_resizable(False)
+    #     self.search_window.set_border_width(10)
         
-        
-        self.search_window.add(hig_box)
-        self.search_window.show_all()
-        
-        self.search_window.get_style_context().add_class('SearchWindow')
+    #     # self.search_window.connect("key-press-event", on_search_window_key_press, self.search_window)
 
-
+        
+    #     self.search_window.add(hig_box)
+    #     self.search_window.show_all()
+        
+    #     self.search_window.get_style_context().add_class('SearchWindow')
+# 
     def date_dropdown(self, button):
         if hasattr(self, "date_window") and self.date_window:
             self.date_window.destroy()
@@ -292,7 +222,7 @@ class FluxBar(Gtk.Window):
             return
         
         self.buttons_.powerSettingsButtons(self.power_dropdown, power_off, reset, hibernate, lock)
-        
+
         self.power_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.power_window.get_style_context().add_class('PowerWindow')
         

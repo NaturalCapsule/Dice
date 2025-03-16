@@ -54,7 +54,7 @@ class LayOuts:
         main_box.pack_start(self.left_box, False, False, 0)
         main_box.pack_start(self.left_spacer, True, True, 0)
         main_box.pack_start(self.middle_box, False, False, 0)
-        main_box.pack_start(self.right_spacer, True, True, 0)
+        main_box.pack_start(self.right_spacer, True, True, 20)
         main_box.pack_start(self.right_box, False, False, 0)
 
         self.middle_box.set_halign(Gtk.Align.CENTER)

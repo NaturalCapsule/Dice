@@ -1,8 +1,7 @@
 from media import MediaPlayerMonitor
 import subprocess
 media = MediaPlayerMonitor()
-import time
-import sys
+
 
 
 
@@ -32,7 +31,6 @@ def hibernate(button):
     subprocess.run(['systemctl', 'hibernate'])
 
 def update_action(button):
-    # subprocess.Popen(['checkupdates', '|', 'wc -l'])
     command = 'sudo pacman -Syu'
     subprocess.Popen(["kitty", "-e", "sh", "-c", command])
 
@@ -58,18 +56,36 @@ def workspace_5(button):
 
 def set_active_workspace(workspace_num, buttons):
     buttons.workspace1.get_style_context().remove_class('active')
+    buttons.workspace1.set_label('󰤂')
+    
     buttons.workspace2.get_style_context().remove_class('active')
+    buttons.workspace2.set_label('󰤂')
+
     buttons.workspace3.get_style_context().remove_class('active')
+    buttons.workspace3.set_label('󰤂')
+
     buttons.workspace4.get_style_context().remove_class('active')
+    buttons.workspace4.set_label('󰤂')
+
     buttons.workspace5.get_style_context().remove_class('active')
+    buttons.workspace5.set_label('󰤂')
 
     if workspace_num == 1:
         buttons.workspace1.get_style_context().add_class('active')
+        buttons.workspace1.set_label('󰪥')
+        
     elif workspace_num == 2:
         buttons.workspace2.get_style_context().add_class('active')
+        buttons.workspace2.set_label('󰪥')
+
     elif workspace_num == 3:
         buttons.workspace3.get_style_context().add_class('active')
+        buttons.workspace3.set_label('󰪥')
+
     elif workspace_num == 4:
         buttons.workspace4.get_style_context().add_class('active')
+        buttons.workspace4.set_label('󰪥')
+
     elif workspace_num == 5:
         buttons.workspace5.get_style_context().add_class('active')
+        buttons.workspace5.set_label('󰪥')
