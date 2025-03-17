@@ -114,22 +114,22 @@ class Buttons:
         
         self.layout__.middle_buttons.append(self.media_button)
         
-        self.play_pause_button = Gtk.Button('')
-        self.play_pause_button.get_style_context().add_class('playPauseButton')
-        self.play_pause_button.connect('clicked', pause_play_action)
+        # self.play_pause_button = Gtk.Button('')
+        # self.play_pause_button.get_style_context().add_class('playPauseButton')
+        # self.play_pause_button.connect('clicked', pause_play_action)
 
-        self.forward_button = Gtk.Button(label = '')
-        self.forward_button.get_style_context().add_class('forwardButton')
-        self.forward_button.connect('clicked', forward_action)
+        # self.forward_button = Gtk.Button(label = '')
+        # self.forward_button.get_style_context().add_class('forwardButton')
+        # self.forward_button.connect('clicked', forward_action)
         
-        self.backward_button = Gtk.Button(label = '')
-        self.backward_button.get_style_context().add_class('backwardButton')
-        self.backward_button.connect('clicked', backward_action)
+        # self.backward_button = Gtk.Button(label = '')
+        # self.backward_button.get_style_context().add_class('backwardButton')
+        # self.backward_button.connect('clicked', backward_action)
         
         
-        self.reset_button = Gtk.Button(label = '󱞳')
-        self.reset_button.get_style_context().add_class('resetDropdownButton')
-        self.reset_button.connect('clicked', reset_action)
+        # self.reset_button = Gtk.Button(label = '󱞳')
+        # self.reset_button.get_style_context().add_class('resetDropdownButton')
+        # self.reset_button.connect('clicked', reset_action)
     
     def package_button(self, update_packages):
         self.package_button_ = Gtk.Button(label = 'Checking...')

@@ -39,20 +39,27 @@ class MediaPlayerMonitor:
                 'position': position // 1_000_000
             }
         except dbus.exceptions.DBusException as e:
-            print(f"Error retrieving properties: {e}")
+            # print(f"Error retrieving properties: {e}")
             return None
 
+    # def update_current_player(self):
+    #     for service, player in self.players.items():
+    #         properties = self.get_player_properties(player)
+    #         if properties and properties['playback_status'] != 'Stopped':
+    #             self.current_player = player
+    #             return
+
+    #     self.current_player = None
     def update_current_player(self):
         for service, player in self.players.items():
             properties = self.get_player_properties(player)
-            if properties and properties['playback_status'] != 'Stopped':
+            if properties and properties['title'] != 'Unknown Title':
                 self.current_player = player
                 return
-
         self.current_player = None
+    
 
 
-                
     def monitor(self):
         self.get_players()
         self.update_current_player()
@@ -117,15 +124,15 @@ class MediaPlayerMonitor:
                 return
 
     def reset(self):
-        session_bus = dbus.SessionBus()
+        # session_bus = dbus.SessionBus()
+        subprocess.run(['playerctl', 'position', '0'])
+        # for service in session_bus.list_names():
+        #     if service.startswith("org.mpris.MediaPlayer2."):
+        #         player = session_bus.get_object(service, "/org/mpris/MediaPlayer2")
+        #         iface = dbus.Interface(player, "org.mpris.MediaPlayer2.Player")
     
-        for service in session_bus.list_names():
-            if service.startswith("org.mpris.MediaPlayer2."):
-                player = session_bus.get_object(service, "/org/mpris/MediaPlayer2")
-                iface = dbus.Interface(player, "org.mpris.MediaPlayer2.Player")
+        #         iface.SetPosition(dbus.ObjectPath("/org/mpris/MediaPlayer2"), 10)
     
-                iface.SetPosition(dbus.ObjectPath("/org/mpris/MediaPlayer2"), 10)
-    
-                print("Video reset to the beginning.")
-                return
+        #         print("Video reset to the beginning.")
+        #         return
     
