@@ -183,6 +183,75 @@ def update_title(buttons):
 #         buttons.media_button.set_label('')
 #     return True
 
+def get_nvidia_gpu_usage():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
+                                stdout=subprocess.PIPE, text=True)
+        usage = result.stdout.strip()
+        return f"{usage}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_total_vram():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=memory.total', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        vram = result.stdout.strip()
+        return f"{vram:.1}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_used_vram():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=memory.used', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        used_vram = result.stdout.strip()
+        return f"{used_vram}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_temp():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=temperature.gpu', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        temp = result.stdout.strip()
+        return f"{temp}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_powerdraw():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=power.draw', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        power = result.stdout.strip()
+        return f"{power}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_name():
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=name', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        name = result.stdout.strip()
+        return f"{name}"
+    except FileNotFoundError:
+        return ''
+
+def get_nvidia_fanspeed(): 
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=fan.speed', '--format=csv,noheader,nounits']
+,
+                                stdout=subprocess.PIPE, text=True)
+        fan = result.stdout.strip()
+        return f"{fan}"
+    except FileNotFoundError:
+        return ''
+
 
 def update_pauseplay(button):
     if not media.current_player or media.playback_status == 'Paused':
@@ -204,17 +273,22 @@ def fetch_updates_async(buttons):
                 GLib.idle_add(buttons.package_button_.set_label, "󰏖 | Error")
                 return
 
+            
             updates = stdout.strip().split('\n')
             nums = str(len([pkg for pkg in updates if pkg]))  # Count non-empty lines
 
-            GLib.idle_add(buttons.package_button_.set_label, f'󰏖 | {nums}')
+            glyph = "󰏖"
+            text = f"{nums}"
+
+            GLib.idle_add(buttons.package_button_.set_label, f'{glyph} {text}')
+            # GLib.idle_add(buttons.package_button_.set_label, f'󰏖 | {nums}')
 
         except subprocess.TimeoutExpired:
             process.kill()
-            GLib.idle_add(buttons.package_button_.set_label, "󰏖 | Timeout")
+            GLib.idle_add(buttons.package_button_.set_label, "Timeout")
 
         except Exception as e:
-            GLib.idle_add(buttons.package_button_.set_label, f"󰏖 | Crash")
+            GLib.idle_add(buttons.package_button_.set_label, f"Crash")
 
     threading.Thread(target=run_checkupdates, daemon=True).start()
 
@@ -224,10 +298,13 @@ def update_network(labels):
 
     if network:
         labels.network_label.set_text("󰤨")
+        labels.custom_wifi.set_text(labels.online_icon)
         labels.tooltip_text = ssid_
     else:
+        # labels.network_label.set_text("󰤭")
         labels.network_label.set_text("󰤭")
-        labels.network_label.set_text("󰤭")
+        labels.custom_wifi.set_text(labels.offline_icon)
+        
         
         labels.tooltip_text = "No Connection"
     

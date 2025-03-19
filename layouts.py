@@ -1,6 +1,5 @@
 import gi
 import os
-# import sys
 gi.require_version('Gtk', '3.0')
 gi.require_version("GtkLayerShell", "0.1")
 
@@ -10,7 +9,7 @@ import json
 
 class LayOuts:
     def __init__(self, parent):
-        with open('config/config.json', "r") as file:
+        with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
             widgets = json.load(file)
 
         for self.widget in widgets['bar']:
@@ -57,7 +56,7 @@ class LayOuts:
         main_box.pack_start(self.left_box, False, False, 0)
         main_box.pack_start(self.left_spacer, True, True, 0)
         main_box.pack_start(self.middle_box, False, False, 0)
-        main_box.pack_start(self.right_spacer, True, True, 20)
+        main_box.pack_start(self.right_spacer, True, True, 0)
         main_box.pack_start(self.right_box, False, False, 0)
 
         self.middle_box.set_halign(Gtk.Align.CENTER)

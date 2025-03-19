@@ -52,8 +52,16 @@ class Labels:
 
 
     def show_network(self):
+        self.custom_wifi = Gtk.Label()
+        self.custom_wifi.get_style_context().add_class('Wifi')
+        self.custom_wifi.set_has_tooltip(True)
+        self.custom_wifi.connect("query-tooltip", self.on_query_tooltip)
+        self.tooltip_text = "Checking..."
+
         self.network_label = Gtk.Label()
         self.network_label.get_style_context().add_class('Wifi')
+        self.online_icon = ""
+        self.offline_icon = ""
         self.network_label.set_has_tooltip(True)
         self.network_label.connect("query-tooltip", self.on_query_tooltip)
         self.tooltip_text = "Checking..."

@@ -1,6 +1,7 @@
 import json
+import os
 
-with open('config/config.json', "r") as file:
+with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
     widgets = json.load(file)
 
 for widget in widgets['bar']:

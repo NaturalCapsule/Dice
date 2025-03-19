@@ -5,11 +5,9 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 from configparser import ConfigParser
 from media import MediaPlayerMonitor
-# from threading import Timer 
 from buttons import Buttons
 from layouts import LayOuts
 from labels import Labels
-# from dropdowns import DropDowns
 from scales import Scales
 from images import Images
 from updates import *
@@ -26,15 +24,12 @@ class FluxBar(Gtk.Window):
         super().__init__(title="Bar")
 
         self.config = ConfigParser()
-        self.config.read(f'/home/{os.getlogin()}/python/FlXBar/config/config.ini')
-        # self.label
-        # self.buttons_.volume_control
-        # self.load_config()
+        self.config.read(f'/home/{os.getlogin()}/.config/bar/config/config.ini')
         self.load_bar()
         self.initUI()
         self.load_css()
-        load('config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.workspaces)
-
+        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.workspaces, self.custom_workspaces)
+        # print("True")
         self.show_all()
 
     def initUI(self):
@@ -58,8 +53,6 @@ class FluxBar(Gtk.Window):
             print('no monitor detected!')
 
 
-        # Gtk.Settings.get_default().set_property("gtk-cursor-theme-name", "LyraQ-cursors")
-        # Gtk.Settings.get_default().set_property("gtk-cursor-theme-size", 24)
         gtk_mouse()
         self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
 
@@ -82,18 +75,24 @@ class FluxBar(Gtk.Window):
         self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
         poll_active_workspace(set_active_workspace, self.buttons_)
 
-        self.play_pause_button = Gtk.Button(label="Play")  # Set the initial label to "Play"
+        self.play_pause_button = Gtk.Button(label="Play")
         self.play_pause_button.get_style_context().add_class('playPauseButton')
     
         self.layouts = LayOuts(parent = self)
 
-        # bar_pt = bar_position()
         self.workspaces = []
         self.workspaces.append(self.buttons_.workspace1)
         self.workspaces.append(self.buttons_.workspace2)
         self.workspaces.append(self.buttons_.workspace3)
         self.workspaces.append(self.buttons_.workspace4)
         self.workspaces.append(self.buttons_.workspace5)
+
+        self.custom_workspaces = []
+        self.custom_workspaces.append(self.buttons_.custom_workspace1)
+        self.custom_workspaces.append(self.buttons_.custom_workspace2)
+        self.custom_workspaces.append(self.buttons_.custom_workspace3)
+        self.custom_workspaces.append(self.buttons_.custom_workspace4)
+        self.custom_workspaces.append(self.buttons_.custom_workspace5)
         
         
         if self.pos == 'top':
@@ -107,31 +106,14 @@ class FluxBar(Gtk.Window):
         else:
             print("Invalid layout, the program will exit!")
             exit(0)
-        
-        # if bar_pt == "top":
-        #     self.layouts.top_position(parent = self, width_gap = self.width_gap)
-        # elif bar_pt == "bottom":
-        #     self.layouts.bottom_position(parent = self, width_gap = self.width_gap)
-        # elif bar_pt == "left":
-        #     self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
-        # elif bar_pt == "right":
-        #     self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
-        # else:
-        #     print("Invalid layout, the program will exit!")
-        #     exit(0)
-        
+
         
         timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
-
-    # def load_config(self):
-    #     self.pos = self.config.get('Appearance', 'position')
-    #     self.bar_height = self.config.getint('Appearance', 'BarHeight')
-    #     self.width_gap = self.config.getint('Appearance', 'widthGap')
 
 
     def load_css(self):
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_path('/home/naturalcapsule/python/FlXBar/config/style.css')
+        css_provider.load_from_path(f'/home/{os.getlogin()}/.config/bar/config/style.css')
         
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -183,7 +165,6 @@ class FluxBar(Gtk.Window):
         backward_button.get_style_context().add_class('backwardButton')
         
 
-        # Buttons
         fixed.put(reset_button, 70, 40)
         fixed.put(forward_button, 100, 10)
         fixed.put(self.play_pause_button, 70, 10)

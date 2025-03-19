@@ -38,22 +38,21 @@ class Buttons:
     
     def Volume_controlButton(self, volume_dropdown):
         self.volume_control = Gtk.Button(label = '󱄡')
-
         self.volume_control.get_style_context().add_class('VolumeControlButton')
         self.volume_control.connect('clicked', volume_dropdown)
-        self.layout__.right_buttons.append(self.volume_control)
+        # self.layout__.right_buttons.append(self.volume_control)
     
     def timeButton(self, date_dropdown):
         self.time_button = Gtk.Button()
         self.time_button.get_style_context().add_class('timeButton')
         self.time_button.connect('clicked', date_dropdown)
-        self.layout__.right_buttons.append(self.time_button)
+        # self.layout__.right_buttons.append(self.time_button)
     
     def powerSettingsButtons(self, power_dropdown, power_off, reset, hibernate, lock):
         self.power_settings = Gtk.Button(label = '󰐦')
         self.power_settings.get_style_context().add_class('powerSettings')
         self.power_settings.connect('clicked', power_dropdown)
-        self.layout__.right_buttons.append(self.power_settings)
+        # self.layout__.right_buttons.append(self.power_settings)
 
 # self.layout__.right_button
 
@@ -74,9 +73,21 @@ class Buttons:
         self.lock_button.connect('clicked', lock)
     
     def workspace_buttons(self, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5):
+        self.active_icon = ""
+        self.default_icon = ""
+        
+        self.custom_workspace1 = Gtk.Button()
+        self.custom_workspace1.get_style_context().add_class('workspace1')
+        self.custom_workspace1.connect('clicked', lambda button: workspace_1(self))
+    
         self.workspace1 = Gtk.Button(label = '󰤂')
         self.workspace1.get_style_context().add_class('workspace1')
         self.workspace1.connect('clicked', lambda button: workspace_1(self))
+    
+    
+        self.custom_workspace2 = Gtk.Button()
+        self.custom_workspace2.get_style_context().add_class('workspace2')
+        self.custom_workspace2.connect('clicked', lambda button: workspace_2(self))
     
         
         self.workspace2 = Gtk.Button(label = '󰤂')
@@ -84,26 +95,38 @@ class Buttons:
         self.workspace2.connect('clicked', lambda button: workspace_2(self))
         
         
+        self.custom_workspace3 = Gtk.Button()
+        self.custom_workspace3.get_style_context().add_class('workspace3')
+        self.custom_workspace3.connect('clicked', lambda button: workspace_3(self))
+        
         self.workspace3 = Gtk.Button(label = '󰤂')
         self.workspace3.get_style_context().add_class('workspace3')
         self.workspace3.connect('clicked', lambda button: workspace_3(self))
         
         
+        self.custom_workspace4 = Gtk.Button()
+        self.custom_workspace4.get_style_context().add_class('workspace4')
+        self.custom_workspace4.connect('clicked', lambda button: workspace_4(self))
+          
         self.workspace4 = Gtk.Button(label = '󰤂')
         self.workspace4.get_style_context().add_class('workspace4')
         self.workspace4.connect('clicked', lambda button: workspace_4(self))
         
         
-        self.workspace5 = Gtk.Button(label = '󰤂')
+        self.custom_workspace5 = Gtk.Button()
+        self.custom_workspace5.get_style_context().add_class('workspace5')
+        self.custom_workspace5.connect('clicked', lambda button: workspace_5(self))
+        
+        self.workspace5 = Gtk.Button()
         self.workspace5.get_style_context().add_class('workspace5')
         self.workspace5.connect('clicked', lambda button: workspace_5(self))
         
         
-        self.layout__.left_buttons.append(self.workspace1)
-        self.layout__.left_buttons.append(self.workspace2)
-        self.layout__.left_buttons.append(self.workspace3)
-        self.layout__.left_buttons.append(self.workspace4)
-        self.layout__.left_buttons.append(self.workspace5)
+        # self.layout__.left_buttons.append(self.workspace1)
+        # self.layout__.left_buttons.append(self.workspace2)
+        # self.layout__.left_buttons.append(self.workspace3)
+        # self.layout__.left_buttons.append(self.workspace4)
+        # self.layout__.left_buttons.append(self.workspace5)
     
     def media_buttons(self, media_dropdown, pause_play_action, forward_action, backward_action, reset_action):
         self.media_button = Gtk.Button()
@@ -112,7 +135,7 @@ class Buttons:
         self.media_button.connect("clicked", media_dropdown)
         
         
-        self.layout__.middle_buttons.append(self.media_button)
+        # self.layout__.middle_buttons.append(self.media_button)
         
         # self.play_pause_button = Gtk.Button('')
         # self.play_pause_button.get_style_context().add_class('playPauseButton')
@@ -132,11 +155,14 @@ class Buttons:
         # self.reset_button.connect('clicked', reset_action)
     
     def package_button(self, update_packages):
+        self.custom_package = Gtk.Button(label = "Checking...")
+        self.custom_package.get_style_context().add_class('PackageButton')
+        self.custom_package.connect('clicked', update_packages)
+
         self.package_button_ = Gtk.Button(label = 'Checking...')
-        # self.package_button_ = Gtk.Button(label = '󰏖')
         self.package_button_.get_style_context().add_class('PackageButton')
         self.package_button_.connect('clicked', update_packages)
-        self.layout__.left_buttons.append(self.package_button_)
+        # self.layout__.left_buttons.append(self.package_button_)
     
     def get_layout(self):
         return self.layout__
