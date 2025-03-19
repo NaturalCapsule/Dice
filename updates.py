@@ -13,6 +13,7 @@ from date import get_calendar_html
 from network import *
 import urllib.request
 import tempfile
+import re
 media = MediaPlayerMonitor()
 # title_name = None
 
@@ -131,8 +132,6 @@ def update_image(labels, images, buttons):
             print(f"Exception in update_image: {e}")
 
     else:
-        # No active player
-        # print("No active media player detected.")
         media_tool_tip = 'No Active media is playing!'
         safe_set_label(labels.dropdown_title_label, '')
         safe_set_label(labels.dropdown_artist, '')
@@ -251,6 +250,83 @@ def get_nvidia_fanspeed():
         return f"{fan}"
     except FileNotFoundError:
         return ''
+
+
+def get_total_ram():
+    result = subprocess.run(['grep', 'MemTotal', '/proc/meminfo'], stdout=subprocess.PIPE)
+    total_ram_kb = int(result.stdout.decode().split()[1])
+    total_ram_gb = round(total_ram_kb / 1024 / 1024, 2)
+    return f"{total_ram_gb}"
+
+def get_free_ram():
+    result = subprocess.run(['grep', 'MemFree', '/proc/meminfo'], stdout=subprocess.PIPE)
+    free_ram_kb = int(result.stdout.decode().split()[1])
+    free_ram_gb = round(free_ram_kb / 1024 / 1024, 2)
+    return f"{free_ram_gb}"
+
+def get_ram_usage():
+    result = subprocess.run(
+        ['awk', '/MemTotal/ {total=$2} /MemAvailable/ {avail=$2} END {print (total-avail)/1024/1024}', '/proc/meminfo'],
+        capture_output=True,
+        text=True
+    )
+    result = float(result.stdout.strip())  # Convert to float
+    return f"{result:.3f}"
+
+def get_used_ram():
+    result = subprocess.run(
+        ['awk', '/MemTotal/ {total=$2} /MemAvailable/ {avail=$2} END {print (total-avail)/1024/1024}', '/proc/meminfo'],
+        capture_output=True,
+        text=True
+    )
+    result = float(result.stdout.strip())  # Convert to float
+    return f"{result:.3f}"
+
+
+def get_cpu_temp():
+    result = subprocess.run(['sensors'], capture_output=True, text=True)
+    temps = []
+
+    # Regex patterns for Intel & AMD
+    patterns = [
+        r'(Core \d+):\s+\+([\d\.]+)°C',        # Intel cores
+        r'Package id \d+:\s+\+([\d\.]+)°C',    # Intel package
+        r'Tctl:\s+\+([\d\.]+)°C',              # AMD Tctl
+        r'Tdie:\s+\+([\d\.]+)°C',              # AMD Tdie
+    ]
+
+    for line in result.stdout.splitlines():
+        for pattern in patterns:
+            match = re.search(pattern, line)
+            if match:
+                if 'Core' in pattern:
+                    core = match.group(1)
+                    temp = match.group(2)
+                    temps.append(f"{core}: {temp}°C")
+                else:
+                    temp = match.group(1)
+                    temps.append(f"{temp}")
+
+    if temps:
+        return temps[0]
+    else:
+        return ["CPU temperature not found"]
+
+def get_cpu_usage():
+    result = subprocess.run(['top', '-bn1'], capture_output=True, text=True)
+    for line in result.stdout.splitlines():
+        if line.startswith('%Cpu(s)'):
+            parts = line.split(',')
+            user = float(parts[0].split()[1])
+            system = float(parts[1].split()[0])
+            total_usage = user + system
+            return f"{total_usage:.1f}"
+
+def get_cpu_info():
+    result = subprocess.run(['lscpu'], capture_output=True, text=True)
+    for line in result.stdout.splitlines():
+        if line.startswith('Model name'):
+            return line.split(":")[1].strip()
 
 
 def update_pauseplay(button):

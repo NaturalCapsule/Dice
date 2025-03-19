@@ -9,7 +9,7 @@
         "the 'name' in the custom lables and buttons can be modified in the style.css (go to style.css and search for label1, label2, etc,)",
 
         "for the buttons you can add your own actions that supports linux commands or env variables, like you see in the buttons examples",
-        "I have made some system info for the labels in the 'text' section, if you want to show gpu info you can add these to 'text'({gpuVram}, {gpuPower}, {gpuName}, {gpuUsage}, {gpuFan}, {gpuUsed}, {gpuTemp}), these are pretty clear what they do."
+        "I have made some system info for the labels in the 'text' section, if you want to show gpu, ram and cpu info you can add these to 'text'({gpuVram}, {gpuPower}, {gpuName}, {gpuUsage}, {gpuFan}, {gpuUsed}, {gpuTemp}, {cpuTemp}, {cpuName}, {cpuUsage}, {ramUsage}, {freeRam}, {totalRam}, {}), these are pretty clear what they do."
         ],
 
 
@@ -17,7 +17,8 @@
         {
         "position": "top",
         "Bar Height": 0,
-        "Width Gap": 0
+        "Width Gap": 0,
+        "workspaces": 3
         }
     ],
 
@@ -26,20 +27,20 @@
             "type": "button",
             "text": "idk",
             "action": "firefox",
-            "name": "test_",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
         },
         {
             "type": "button",
             "text": "idk",
             "action": "telegram-desktop",
-            "name": "test1",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
-        },
+        },  
         {
             "type": "label",
             "text": "󰢮 {gpuUsage}",
-            "name": "test",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
         },
         {

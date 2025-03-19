@@ -1,9 +1,9 @@
 import gi
 import os
+import json
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk, Gdk
-from configparser import ConfigParser
 from media import MediaPlayerMonitor
 from buttons import Buttons
 from layouts import LayOuts
@@ -22,17 +22,18 @@ from bar_config import *
 class FluxBar(Gtk.Window):
     def __init__(self):
         super().__init__(title="Bar")
-
-        self.config = ConfigParser()
-        self.config.read(f'/home/{os.getlogin()}/.config/bar/config/config.ini')
         self.load_bar()
         self.initUI()
         self.load_css()
         load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.workspaces, self.custom_workspaces)
-        # print("True")
         self.show_all()
 
     def initUI(self):
+        with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
+            widgets = json.load(file)
+
+            for self.widget_ in widgets['bar']:
+                widget_ = None
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_resizable(False)
@@ -80,20 +81,8 @@ class FluxBar(Gtk.Window):
     
         self.layouts = LayOuts(parent = self)
 
-        self.workspaces = []
-        self.workspaces.append(self.buttons_.workspace1)
-        self.workspaces.append(self.buttons_.workspace2)
-        self.workspaces.append(self.buttons_.workspace3)
-        self.workspaces.append(self.buttons_.workspace4)
-        self.workspaces.append(self.buttons_.workspace5)
+        self._workspaces()
 
-        self.custom_workspaces = []
-        self.custom_workspaces.append(self.buttons_.custom_workspace1)
-        self.custom_workspaces.append(self.buttons_.custom_workspace2)
-        self.custom_workspaces.append(self.buttons_.custom_workspace3)
-        self.custom_workspaces.append(self.buttons_.custom_workspace4)
-        self.custom_workspaces.append(self.buttons_.custom_workspace5)
-        
         
         if self.pos == 'top':
             self.layouts.top_position(parent = self, width_gap = self.width_gap)
@@ -125,6 +114,24 @@ class FluxBar(Gtk.Window):
         self.pos = bar_position()
         self.bar_height = bar_height()
         self.width_gap = bar_gap()
+
+    def _workspaces(self):
+        total = self.widget_['workspaces']
+
+        if total > 5:
+            print("More than 5 workspaces detected.\nExiting...")
+            exit(0)
+
+        self.workspaces = []
+        self.custom_workspaces = []
+
+        for i in range(1, total + 1):
+            btn = getattr(self.buttons_, f'workspace{i}')
+            self.workspaces.append(btn)
+
+            custom_btn = getattr(self.buttons_, f'custom_workspace{i}')
+            self.custom_workspaces.append(custom_btn)
+
 
     def media_dropdown(self, button):
         if hasattr(self, "media_window") and self.media_window:
