@@ -1,0 +1,65 @@
+{
+    "widgets": [
+        {
+            "type": "label",
+            "name": "label1",
+            "layout": "right",
+            "text": "Example label 1"
+        },
+        {
+            "type": "label",
+            "name": "label2",
+            "layout": "right",
+            "text": "Example label 2"
+        },
+        {
+            "type": "button",
+            "name": "button3",
+            "text": "Open telegram",
+            "layout": "SELECT A LAYOUT",
+            "action": "C:/Users/sxxve/AppData/Roaming/Telegram Desktop/Telegram.exe"
+        },
+        {
+            "type": "button",
+            "name": "button2",
+            "text": "Open explorer",
+            "layout": "SELECT A LAYOUT",
+            "action": "explorer"
+        },
+        {
+            "type": "button",
+            "name": "button1",
+            "text": "start firefox",
+            "layout": "SELECT A LAYOUT",
+            "action": "start firefox"
+        },
+        {
+            "type": "label",
+            "name": "label2",
+            "layout": "SELECT A LAYOUT",
+            "text": "Example label 2"
+        },
+        {
+            "media": "show media",
+            "layout": "middle"
+        },
+        {
+            "wifi": "show wifi",
+            "layout": "right",
+            "onlineIcon": "",
+            "offlineIcon": ""
+        },
+        {
+            "time": "show time",
+            "layout": "right",
+            "icon": ""
+        },
+        {
+            "workspaces": "show workspaces",
+            "layout": "left",
+            "active icon": "",
+            "default icon": ""
+        }
+
+    ]
+}

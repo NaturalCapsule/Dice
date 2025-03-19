@@ -13,8 +13,10 @@ from labels import Labels
 # from dropdowns import DropDowns
 from scales import Scales
 from images import Images
+# from load_config import load
 from updates import *
 from actions import *
+
 
 from hypr_workspaces import poll_active_workspace
 from timers import timers
@@ -29,7 +31,8 @@ class FluxBar(Gtk.Window):
         self.load_config()
         self.initUI()
         self.load_css()
-        self.texts()
+        # load('config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels)
+
         self.show_all()
 
     def initUI(self):
@@ -117,58 +120,6 @@ class FluxBar(Gtk.Window):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
     )
 
-    def texts(self):
-        text_pos = f"[{time.strftime(r'%d %b %Y | %H:%M:%S')}] [Info!] Using: ({self.pos}) as the bar position!"
-        print(text_pos)
-
-
-    # def media_dropdown(self, button):
-    #     if hasattr(self, "media_window") and self.media_window:
-    #         self.media_window.destroy()
-    #         self.media_window = None
-    #         return
-        
-    #     self.buttons_.media_buttons(self.media_dropdown, pause_play_action_, forward_action, backward_action, reset_action)
-    #     self.media_window = Gtk.Window(type=Gtk.WindowType.POPUP)
-    #     self.media_window.get_style_context().add_class('MediaWindow')
-        
-    #     self.media_window.set_hexpand(False)
-    #     self.media_window.set_vexpand(False)
-        
-    #     self.media_window.set_decorated(False)
-    #     self.media_window.set_resizable(False)
-    #     self.media_window.set_border_width(10)
-
-
-    #     x, y = self.get_position()
-    #     bx, by = button.translate_coordinates(self, 0, 0)
-    #     self.media_window.move(x + bx - 100, y + by - 120)
-
-    #     hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-    #     ver_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
-
-    #     fixed = Gtk.Fixed()
-
-    #     self.labels.dropdown_title_label.set_halign(Gtk.Align.START)
-
-    #     hig_box.pack_start(self.images.dropdown_image, True, True, 0)
-    #     hig_box.pack_start(ver_box, False, False, 0)
-
-
-    #     ver_box.pack_start(self.labels.dropdown_artist, False, False, 10)
-    #     self.labels.dropdown_title_label.set_halign(Gtk.Align.CENTER) 
-    #     ver_box.pack_start(self.labels.dropdown_title_label, False, False, 0)
-        
-    #     fixed.put(self.buttons_.reset_button, 70, 40)
-    #     fixed.put(self.buttons_.forward_button, 100, 10)
-    #     fixed.put(self.buttons_.play_pause_button, 70, 10)
-    #     fixed.put(self.buttons_.backward_button, 40, 10)
-        
-        
-    #     ver_box.pack_start(fixed, True, True, 0)
-
-    #     self.media_window.add(hig_box)
-        # self.media_window.show_all()
 
 
     def media_dropdown(self, button):
@@ -177,33 +128,19 @@ class FluxBar(Gtk.Window):
             self.media_window = None
             return
 
-        # Buttons are okay to reuse (assuming they don’t move out of main window)
-        # self.buttons_.media_buttons(self.media_dropdown, pause_play_action_, forward_action, backward_action, reset_action)
-        
         self.media_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.media_window.get_style_context().add_class('MediaWindow')
         self.media_window.set_decorated(False)
         self.media_window.set_resizable(False)
         self.media_window.set_border_width(10)
-        
-        # Positioning
-        # x, y = self.get_position()
-        # bx, by = button.translate_coordinates(self, 0, 0)
-        # self.media_window.move(x + bx - 100, y + by - 120)
 
         hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         ver_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         fixed = Gtk.Fixed()
 
-        # Clone image
         pixbuf = self.images.dropdown_image.get_pixbuf()
         new_image = Gtk.Image.new_from_pixbuf(pixbuf.copy() if pixbuf else None)
         hig_box.pack_start(new_image, True, True, 0)
-
-        # Clone labels
-        # artist_label = Gtk.Label(label=self.labels.dropdown_artist.get_text())
-        # title_label = Gtk.Label(label=self.labels.dropdown_title_label.get_text())
-        # title_label.set_halign(Gtk.Align.CENTER)
 
         ver_box.pack_start(self.labels.dropdown_artist, False, False, 10)
         ver_box.pack_start(self.labels.dropdown_title_label, False, False, 0)
@@ -218,9 +155,6 @@ class FluxBar(Gtk.Window):
         forward_button = Gtk.Button(label="")
         forward_button.connect("clicked", forward_action)
         forward_button.get_style_context().add_class('forwardButton')
-
-        # self.play_pause_button = Gtk.Button(label="")
-        # self.play_pause_button.connect("clicked", pause_play_action_)
 
         backward_button = Gtk.Button(label="")
         backward_button.connect("clicked", backward_action)
@@ -240,30 +174,6 @@ class FluxBar(Gtk.Window):
         self.media_window.connect("destroy", lambda w: setattr(self, "media_window", None))
         self.media_window.show_all()
 
-    # def search_dropdown(self, button):
-    #     if hasattr(self, "search_window") and self.search_window:
-    #         self.search_window.destroy()
-    #         self.search_window = None
-    #         return
-
-    #     self.entries.search_entry()
-
-    #     hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-    #     hig_box.pack_start(self.entries.entry_, False, False, 0)
-
-    #     self.search_window = Gtk.Window(type=Gtk.WindowType.POPUP)
-    #     self.search_window.set_decorated(False)
-    #     self.search_window.set_resizable(False)
-    #     self.search_window.set_border_width(10)
-        
-    #     # self.search_window.connect("key-press-event", on_search_window_key_press, self.search_window)
-
-        
-    #     self.search_window.add(hig_box)
-    #     self.search_window.show_all()
-        
-    #     self.search_window.get_style_context().add_class('SearchWindow')
-# 
     def date_dropdown(self, button):
         if hasattr(self, "date_window") and self.date_window:
             self.date_window.destroy()
@@ -380,9 +290,6 @@ class FluxBar(Gtk.Window):
         self.volume_window.add(hig_box)
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
-
-    # def times(self):
-    #     timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
 
 win = FluxBar()
 win.connect("destroy", Gtk.main_quit)

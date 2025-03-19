@@ -53,57 +53,6 @@ def get_cached_filename(title):
     hashed = hashlib.md5(title.encode()).hexdigest()
     return f"/tmp/{hashed}.jpg"
 
-# def update_image(labels, images, buttons):
-#     global title_name
-#     media.monitor()
-#     if media.current_player:
-#         try:
-#             if 'file:///' in media.art_url:
-                
-#                 thumbnail = media.art_url.replace('file:///', '/')
-#                 height, width = 60, 60
-            
-                
-#             elif 'file:///' not in media.art_url:
-                
-#                 if title_name != media.title_:
-                    
-                    
-#                     thumbnail = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-#                     thumbnail = thumbnail.name
-#                     urllib.request.urlretrieve(media.art_url, thumbnail)
-#                     title_name = media.title_
-#                     height, width = 35, 35
-            
-#             if thumbnail and os.path.exists(thumbnail):
-                
-#                 labels.dropdown_title_label.set_label(media.title_)
-#                 labels.dropdown_artist.set_text(media.artist)
-#                 global media_tool_tip
-#                 media_tool_tip = f'Now Playing: {media.title_}\n          By\n{media.artist}'
-
-#                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, height, width)
-#                 circular_pixbuf = images.create_circular_pixbuf(pixbuf)
-
-#                 pixbuf_ = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
-#                 radius_pixbuf = images.create_radius_pixbuf(pixbuf_)
-
-
-#                 if circular_pixbuf and radius_pixbuf:
-#                     images.bar_image.set_from_pixbuf(circular_pixbuf)
-#                     images.bar_image.set_has_tooltip(True)
-                        
-#                     images.bar_image.connect("query-tooltip", media_tooltip)
-
-
-#                     images.dropdown_image.set_from_pixbuf(radius_pixbuf)
-                
-#                 else:
-#                     print("Error")
-#         except Exception as e:
-#             pass
-#     return True
-
 
 def safe_set_label(label, text):
     GLib.idle_add(label.set_text, text)
@@ -111,38 +60,46 @@ def safe_set_label(label, text):
 def safe_set_image(image_widget, pixbuf):
     GLib.idle_add(image_widget.set_from_pixbuf, pixbuf)
 
+
+
 def update_image(labels, images, buttons):
     global title_name, player_name
     media.monitor()
+    thumbnail = None
+    
+    current_player = media.current_player or ''
+    current_title = media.title_ or ''
+    should_update = False
 
-    if media.current_player:
+    if player_name != current_player:
+        print(f"Player changed: {player_name} → {current_player}")
+        player_name = current_player
+        should_update = True
+
+    # Detect title change
+    if title_name != current_title:
+        print(f"Title changed: {title_name} → {current_title}")
+        title_name = current_title
+        should_update = True
+
+    if current_player:
         try:
-            should_update = False
-
-            if title_name != media.title_:
-                title_name = media.title_
-                should_update = True
-
-            if player_name != media.current_player:
-                player_name = media.current_player
-                should_update = True
-
             if should_update:
-                print(f"Updating for title: {media.title_}, artist: {media.artist}")
-
-                safe_set_label(labels.dropdown_title_label, media.title_)
+                print(f"title: {current_title}\nartist: {media.artist}")
+                
+                safe_set_label(labels.dropdown_title_label, current_title)
                 safe_set_label(labels.dropdown_artist, media.artist)
+                
                 global media_tool_tip
-                media_tool_tip = f'Now Playing: {media.title_}\n          By\n{media.artist}'
+                media_tool_tip = f'Now Playing: {current_title}\n          By\n{media.artist}'
 
                 # Image part
                 height, width = 50, 50
-
                 if 'file:///' in media.art_url:
                     thumbnail = media.art_url.replace('file:///', '/')
                     height, width = 60, 60
-                else:
-                    thumbnail = get_cached_filename(media.title_)
+                elif 'https://' in media.art_url or 'http://' in media.art_url:
+                    thumbnail = get_cached_filename(current_title)
                     if not os.path.exists(thumbnail):
                         print(f"Downloading thumbnail to cache: {thumbnail}")
                         urllib.request.urlretrieve(media.art_url, thumbnail)
@@ -163,16 +120,26 @@ def update_image(labels, images, buttons):
                         safe_set_image(images.dropdown_image, radius_pixbuf)
                         images.bar_image.set_has_tooltip(True)
                         images.bar_image.connect("query-tooltip", media_tooltip)
+                        images.bar_image.show()
+                        images.dropdown_image.show()
                     else:
                         print("Error: Failed to create pixbufs.")
-                else:
-                    print("Thumbnail file missing, using default image.")
+
+
 
         except Exception as e:
             print(f"Exception in update_image: {e}")
 
-    return True
+    else:
+        # No active player
+        # print("No active media player detected.")
+        media_tool_tip = 'No Active media is playing!'
+        safe_set_label(labels.dropdown_title_label, '')
+        safe_set_label(labels.dropdown_artist, '')
+        images.bar_image.hide()
+        images.dropdown_image.hide()
 
+    return True
 
 def media_tooltip(widget, x, y, keyboard_mode, tooltip):
     global media_tool_tip

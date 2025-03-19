@@ -361,12 +361,12 @@ button * {
 .workspace3,
 .workspace4,
 .workspace5 {
-
     border-radius: 5px;
     padding: 4px 8px;
     margin: 3px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+    /* animation: gradient_f 20s ease-in infinite; */
+    /* transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682); */
+    transition: margin-left 0.5s ease;
 }
 
 .workspace1:hover,
@@ -387,6 +387,7 @@ button * {
     color: @color1;
     margin-top: 3px;
     margin-bottom: 3px;
+    /* margin-left: 20px; */
     border-radius: 15px;
     animation: gradient_f 20s ease-in infinite;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
@@ -483,14 +484,6 @@ button * {
     border-radius: 15px;
     padding: 3px;
 }
-
-/* .PackageButton {
-    background-color: @color4;
-    border-radius: 20px;
-    border: 0px solid @color7;
-    color: @color7;
-    outline: none;
-} */
 
 .PackageButton {
     /* font-size: 20px; */

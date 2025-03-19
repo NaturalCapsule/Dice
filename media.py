@@ -7,8 +7,18 @@ gi.require_version('Gtk', '3.0')
 class MediaPlayerMonitor:
     def __init__(self):
         self.session_bus = dbus.SessionBus()
+        # self.players = {}
+        # self.current_player = None
         self.players = {}
         self.current_player = None
+
+        # Initialize properties with safe defaults!
+        self.title_ = ''
+        self.artist = ''
+        self._album = ''
+        self.psoition = ''
+        self.playback_status = ''
+        self.art_url = ''
         self.monitor()
         
     def get_players(self):
@@ -45,38 +55,80 @@ class MediaPlayerMonitor:
     # def update_current_player(self):
     #     for service, player in self.players.items():
     #         properties = self.get_player_properties(player)
-    #         if properties and properties['playback_status'] != 'Stopped':
+    #         if properties and properties['title'] != 'Unknown Title':
     #             self.current_player = player
     #             return
-
     #     self.current_player = None
     def update_current_player(self):
+        active_found = False
         for service, player in self.players.items():
             properties = self.get_player_properties(player)
-            if properties and properties['title'] != 'Unknown Title':
-                self.current_player = player
-                return
-        self.current_player = None
-    
+            if properties:
+                if properties['playback_status'] == 'Playing' or properties['playback_status'] == 'Paused':
+                    self.current_player = player
+                    active_found = True
+                    break
+                if not active_found:
+                    self.current_player = player
+        if not active_found:
+            self.current_player = None
 
+
+
+    # def monitor(self):
+    #     self.get_players()
+    #     self.update_current_player()
+
+    #     if self.current_player:
+    #         self.properties = self.get_player_properties(self.current_player)
+    #         if self.properties:
+    #             self.title_ = f"{self.properties['title']}"
+    #             #  - {self.properties['artist']}
+    #             self.artist = f"{self.properties['artist']}"
+    #             self._album = f"{self.properties['album']}"
+    #             self.psoition = f"{self.properties['position']}"
+    #             self.playback_status = f"{self.properties['playback_status']}"
+    #             self.art_url = f"{self.properties['art_url']}"
+    #     else:
+    #         return 'No active media player found'
+        # return True
 
     def monitor(self):
         self.get_players()
         self.update_current_player()
 
         if self.current_player:
-            self.properties = self.get_player_properties(self.current_player)
+            retry = 0
+            while retry < 3:
+                self.properties = self.get_player_properties(self.current_player)
+                if self.properties and self.properties['title'] != 'Unknown Title':
+                    break
+                else:
+                    sleep(0.3)
+                    retry += 1
+
             if self.properties:
                 self.title_ = f"{self.properties['title']}"
-                #  - {self.properties['artist']}
                 self.artist = f"{self.properties['artist']}"
                 self._album = f"{self.properties['album']}"
                 self.psoition = f"{self.properties['position']}"
                 self.playback_status = f"{self.properties['playback_status']}"
                 self.art_url = f"{self.properties['art_url']}"
+            else:
+                self.title_ = ''
+                self.artist = ''
+                self._album = ''
+                self.psoition = ''
+                self.playback_status = ''
+                self.art_url = ''
         else:
-            return 'No active media player found'
-        return True
+            self.title_ = ''
+            self.artist = ''
+            self._album = ''
+            self.psoition = ''
+            self.playback_status = ''
+            self.art_url = ''
+
 
 
     # def pause_play_action(self):
