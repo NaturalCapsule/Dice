@@ -1,43 +1,47 @@
 {
+
+    "explaning": [
+        "In the 'widgets' section you can add your own labels or buttons using the examples i provided and make your own buttons and lables",
+        "If you dont like the layouts you can move the labels and buttons to match your layout like you can remove the 'menu' and move it to the first section",
+        "If you have any layouts problem (like the middle layout is a little to the left or right) you can add lables and make them trasparent to make the middle layout in the middle",
+        
+        "(DONT USE, STILL IN DEVELEMOPMENT!)in the 'icon' you can set any texts you like, or you can set a glyph icon from https://fontawesome.com and https://pictogrammers.com/library/mdi/, or any glyph websites",
+
+        "the 'name' in the custom lables and buttons can be modified in the style.css (go to style.css and search for label1, label2, etc,)",
+
+        "for the buttons you can add your own actions that supports linux commands, like you see in the buttons examples",
+        "(DONT USE, STILL IN DEVELEMOPMENT!)I have made some system info for the labels in the 'text' section, if you want to show the ram info, cpu and gpu you can add these to 'text'(cputemp, cpuUsage, ramusage, ramtotalGB, ramusedGB, ramusage, nvidiatemp, nvidiausage, nvidiaTOTVram, nvidiaUSEDVram), these are pretty clear for what they do."
+        ],
+
+
+    "bar": [
+        {
+        "position": "top",
+        "Bar Height": 0,
+        "Width Gap": 0
+        }
+    ],
+
     "widgets": [
         {
-            "type": "label",
-            "name": "label1",
-            "layout": "right",
-            "text": "Example label 1"
-        },
-        {
-            "type": "label",
-            "name": "label2",
-            "layout": "right",
-            "text": "Example label 2"
+            "type": "button",
+            "text": "idk",
+            "action": "firefox",
+            "name": "test",
+            "layout": "SELECT A LAYOUT"
         },
         {
             "type": "button",
-            "name": "button3",
-            "text": "Open telegram",
-            "layout": "SELECT A LAYOUT",
-            "action": "C:/Users/sxxve/AppData/Roaming/Telegram Desktop/Telegram.exe"
-        },
-        {
-            "type": "button",
-            "name": "button2",
-            "text": "Open explorer",
-            "layout": "SELECT A LAYOUT",
-            "action": "explorer"
-        },
-        {
-            "type": "button",
-            "name": "button1",
-            "text": "start firefox",
-            "layout": "SELECT A LAYOUT",
-            "action": "start firefox"
+            "text": "idk",
+            "action": "telegram-desktop",
+            "name": "test1",
+            "layout": "SELECT A LAYOUT"
         },
         {
             "type": "label",
-            "name": "label2",
-            "layout": "SELECT A LAYOUT",
-            "text": "Example label 2"
+            "text": "idk",
+            "name": "test2",
+            "layout": "SELECT A LAYOUT"
         },
         {
             "media": "show media",
@@ -50,6 +54,16 @@
             "offlineIcon": ""
         },
         {
+            "power menu": "show power menu",
+            "layout": "right",
+            "icon": ""
+        },
+        {
+            "volume": "show volume",
+            "layout": "right",
+            "icon": ""
+        },
+        {
             "time": "show time",
             "layout": "right",
             "icon": ""
@@ -59,6 +73,11 @@
             "layout": "left",
             "active icon": "",
             "default icon": ""
+        },
+        {
+            "package": "show package",
+            "layout": "left",
+            "icon": ""
         }
 
     ]

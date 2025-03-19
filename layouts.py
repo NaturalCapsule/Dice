@@ -1,33 +1,36 @@
 import gi
 import os
-import sys
+# import sys
 gi.require_version('Gtk', '3.0')
 gi.require_version("GtkLayerShell", "0.1")
 
 from gi.repository import Gtk, GtkLayerShell
-from configparser import ConfigParser
+import json
 
 
 class LayOuts:
-    def __init__(self, parent, bar_image, network_label):
-        self.config = ConfigParser()
-        self.config.read(f'/home/{os.getlogin()}/python/FlXBar/config/config.ini')
+    def __init__(self, parent):
+        with open('config/config.json', "r") as file:
+            widgets = json.load(file)
+
+        for self.widget in widgets['bar']:
+            widget_ = None
+        
         if not GtkLayerShell.is_supported():
             print("Error: Layer Shell not supported. if you on Hyprland run this command: GDK_BACKEND=wayland python bar.py")
-            # sys.exit()
             exit(1)
             
         
         
-        self.layouts(parent, bar_image, network_label)
+        self.layouts(parent)
 
-    def layouts(self, parent, bar_image, network_label):
+    def layouts(self, parent):
         self.buttons_layout = parent.buttons_.get_layout()
 
 
-        pos = self.config.get('Appearance', 'position')
+        pos = self.widget.get("position")
 
-        if pos == 'left' or  pos == 'right':
+        if pos == "left" or  pos == "right":
             main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             parent.add(main_box)
             
@@ -38,7 +41,7 @@ class LayOuts:
             self.left_spacer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.right_spacer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        elif pos == 'top' or pos == 'bottom':
+        elif pos == "top" or pos == "bottom":
             main_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
             parent.add(main_box)
 
@@ -59,19 +62,6 @@ class LayOuts:
 
         self.middle_box.set_halign(Gtk.Align.CENTER)
 
-        self.middle_box.pack_start(bar_image, False, False, 0)
-
-        for button in self.buttons_layout.left_buttons:
-            self.left_box.pack_start(button, False, False, 0)
-
-        for button in self.buttons_layout.middle_buttons:
-            self.middle_box.pack_start(button, True, False, 0)
-            
-        self.right_box.pack_start(network_label, False, False, 0)
-
-        for button in self.buttons_layout.right_buttons:
-            self.right_box.pack_start(button, False, False, 0)
-    
     def left_position(self, parent, width_gap, desired_width):
         
         GtkLayerShell.init_for_window(parent)

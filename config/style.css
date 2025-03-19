@@ -380,6 +380,20 @@ button * {
 }
 
 
+/* custom widget css example */
+/* .test {
+    background-color: aliceblue;
+    border-radius: 10px;
+}
+.test1 {
+    background-color: aqua;
+    border-radius: 10px;
+}
+
+.test2 {
+    background-color: aqua;
+    border-radius: 10px;
+} */
 
 .workspace1.active, .workspace2.active, .workspace3.active, 
 .workspace4.active, .workspace5.active {
