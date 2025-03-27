@@ -57,61 +57,61 @@ def set_active_workspace(workspace_num, buttons):
     buttons.custom_workspace1.set_label(buttons.default_icon)
     
     buttons.workspace1.get_style_context().remove_class('active')
-    buttons.workspace1.set_label('󰊠')
+    buttons.workspace1.set_label('1')
     
     
     buttons.custom_workspace2.get_style_context().remove_class('active')
     buttons.custom_workspace2.set_label(buttons.default_icon)
 
     buttons.workspace2.get_style_context().remove_class('active')
-    buttons.workspace2.set_label('󰊠')
+    buttons.workspace2.set_label('2')
 
 
     buttons.custom_workspace3.get_style_context().remove_class('active')
     buttons.custom_workspace3.set_label(buttons.default_icon)
 
     buttons.workspace3.get_style_context().remove_class('active')
-    buttons.workspace3.set_label('󰊠')
+    buttons.workspace3.set_label('3')
 
 
     buttons.custom_workspace4.get_style_context().remove_class('active')
     buttons.custom_workspace4.set_label(buttons.default_icon)
 
     buttons.workspace4.get_style_context().remove_class('active')
-    buttons.workspace4.set_label('󰊠')
+    buttons.workspace4.set_label('4')
 
     buttons.custom_workspace5.get_style_context().remove_class('active')
     buttons.custom_workspace5.set_label(buttons.default_icon)
     
     buttons.workspace5.get_style_context().remove_class('active')
-    buttons.workspace5.set_label('󰊠')
+    buttons.workspace5.set_label('5')
 
     if workspace_num == 1:
         buttons.custom_workspace1.get_style_context().add_class('active')
         buttons.custom_workspace1.set_label(buttons.active_icon)
 
         buttons.workspace1.get_style_context().add_class('active')
-        buttons.workspace1.set_label('󰮯')
+        buttons.workspace1.set_label('1')
         
     elif workspace_num == 2:
         buttons.custom_workspace2.get_style_context().add_class('active')
         buttons.custom_workspace2.set_label(buttons.active_icon)
 
         buttons.workspace2.get_style_context().add_class('active')
-        buttons.workspace2.set_label('󰮯')
+        buttons.workspace2.set_label('2')
 
     elif workspace_num == 3:
         buttons.custom_workspace3.get_style_context().add_class('active')
         buttons.custom_workspace3.set_label(buttons.active_icon)
 
         buttons.workspace3.get_style_context().add_class('active')
-        buttons.workspace3.set_label('󰮯')
+        buttons.workspace3.set_label('3')
 
     elif workspace_num == 4:
         buttons.custom_workspace4.get_style_context().add_class('active')
         buttons.custom_workspace4.set_label(buttons.active_icon)
 
-        buttons.workspace4.set_label('󰮯')
+        buttons.workspace4.set_label('4')
         buttons.workspace4.get_style_context().add_class('active')
 
     elif workspace_num == 5:
@@ -119,4 +119,4 @@ def set_active_workspace(workspace_num, buttons):
         buttons.custom_workspace5.set_label(buttons.active_icon)
 
         buttons.workspace5.get_style_context().add_class('active')
-        buttons.workspace5.set_label('󰮯')
+        buttons.workspace5.set_label('5')

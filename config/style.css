@@ -30,6 +30,7 @@ button * {
     margin: 0px;
     padding: 0px;
 }
+/*---------------don't change above---------------*/
 
 
 .timeButton {
@@ -79,28 +80,6 @@ button * {
     padding-left: 10px;
 }
 
-
-.SearchButton {
-    font-size: 20px;
-    color: @color1;
-    background-color: @color4;
-    border-radius: 15px;
-    margin: 3px;
-    padding-right: 10px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-    padding-left: 10px;
-}
-
-
-.SearchButton:hover {
-    font-size: 20px;
-    margin: 3px;
-    color: @color4;
-    background-color: @color1;
-    border-radius: 15px;
-    padding-right: 10px;
-    padding-left: 10px;
-}
 
 .mediaButton {
     margin: 3px;
@@ -521,23 +500,6 @@ button * {
     padding-left: 10px;
 }
 
-.SearchEntry {
-    background-color: @color4;
-    border-radius: 20px;
-    border: 0px solid @color7;
-    color: @color7;
-    outline: none;
-}
-
-.SearchEntry.active {
-    background-color: @color1;
-    color: white;
-    border: 0px solid @color7;
-    border-radius: 20px;
-    outline: none;
-}
-
-
 
 .BarImage {
     padding-left: 3px;
@@ -549,19 +511,6 @@ button * {
     font-size: 20px;
 }
 
-.SearchWindow {
-    background-color: @color4;
-    border-radius: 6px;
-    outline: none;
-    border: none;
-}
-
-.SearchWindow active {
-    background-color: @color1;
-    border-radius: 6px;
-    outline: none;
-    border: none;
-}
 
 .DateWindow {
     background-color: @color4;

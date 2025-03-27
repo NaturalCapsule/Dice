@@ -1,6 +1,28 @@
 import gi
 import os
 import json
+import sys
+import shutil
+import time
+
+username = os.getlogin()
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+folder_name = 'config'
+
+folder_path = os.path.join(current_dir, folder_name)
+
+if os.path.isdir(folder_path) and not os.path.exists(f'/home/{username}/.config/bar'):
+    print("checking......")
+    os.makedirs(f'/home/{username}/.config/bar')
+    dst = f'/home/{username}/.config/bar/'
+    src = 'config'
+    print("moving.....")
+    shutil.move(src, dst)
+    print(f"'config' folder moved to /home/{username}/bar/, successfully!")
+
+# time.sleep(2)
+
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk, Gdk
@@ -10,14 +32,18 @@ from layouts import LayOuts
 from labels import Labels
 from scales import Scales
 from images import Images
+
 from updates import *
 from actions import *
+from bar_config import *
 
 from load_gtk_mouse import gtk_mouse
 from widgets import load
 from hypr_workspaces import poll_active_workspace
 from timers import timers
-from bar_config import *
+
+
+
 
 class FluxBar(Gtk.Window):
     def __init__(self):
@@ -28,12 +54,14 @@ class FluxBar(Gtk.Window):
         load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.workspaces, self.custom_workspaces)
         self.show_all()
 
+
     def initUI(self):
         with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
             widgets = json.load(file)
-
+            
             for self.widget_ in widgets['bar']:
                 widget_ = None
+                
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_resizable(False)
@@ -78,12 +106,12 @@ class FluxBar(Gtk.Window):
 
         self.play_pause_button = Gtk.Button(label="Play")
         self.play_pause_button.get_style_context().add_class('playPauseButton')
-    
+
         self.layouts = LayOuts(parent = self)
 
         self._workspaces()
 
-        
+
         if self.pos == 'top':
             self.layouts.top_position(parent = self, width_gap = self.width_gap)
         elif self.pos == 'bottom':
@@ -96,7 +124,7 @@ class FluxBar(Gtk.Window):
             print("Invalid layout, the program will exit!")
             exit(0)
 
-        
+
         timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
 
 
@@ -117,7 +145,6 @@ class FluxBar(Gtk.Window):
 
     def _workspaces(self):
         total = self.widget_['workspaces']
-
         if total > 5:
             print("More than 5 workspaces detected.\nExiting...")
             exit(0)
@@ -132,7 +159,7 @@ class FluxBar(Gtk.Window):
             custom_btn = getattr(self.buttons_, f'custom_workspace{i}')
             self.custom_workspaces.append(custom_btn)
 
-
+        
     def media_dropdown(self, button):
         if hasattr(self, "media_window") and self.media_window:
             self.media_window.destroy()
@@ -170,7 +197,7 @@ class FluxBar(Gtk.Window):
         backward_button = Gtk.Button(label="")
         backward_button.connect("clicked", backward_action)
         backward_button.get_style_context().add_class('backwardButton')
-        
+
 
         fixed.put(reset_button, 70, 40)
         fixed.put(forward_button, 100, 10)
@@ -183,6 +210,7 @@ class FluxBar(Gtk.Window):
         self.media_window.add(hig_box)
         self.media_window.connect("destroy", lambda w: setattr(self, "media_window", None))
         self.media_window.show_all()
+
 
     def date_dropdown(self, button):
         if hasattr(self, "date_window") and self.date_window:
@@ -200,9 +228,6 @@ class FluxBar(Gtk.Window):
         self.date_window.set_resizable(False)
         self.date_window.set_border_width(10)
         
-        x, y = self.get_position()
-        bx, by = button.translate_coordinates(self, 0, 0)
-        self.date_window.move(x + bx - 100, y + by - 120)
 
         hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
@@ -210,6 +235,7 @@ class FluxBar(Gtk.Window):
 
         self.date_window.add(hig_box)
         self.date_window.show_all()
+
 
     def power_dropdown(self, button):
         if hasattr(self, "power_window") and self.power_window:
@@ -228,13 +254,8 @@ class FluxBar(Gtk.Window):
         self.power_window.set_decorated(False)
         self.power_window.set_resizable(False)
         self.power_window.set_border_width(10)
-        
-        x, y = self.get_position()
-        bx, by = button.translate_coordinates(self, 0, 0)
-        self.power_window.move(x + bx - 100, y + by - 120)
 
         grid = Gtk.Grid()
-
 
         grid.attach(self.buttons_.power_off_button, 1, 0, 2, 1)
         grid.attach(self.labels.power_off_label, 0, 0, 1, 1)
@@ -251,6 +272,7 @@ class FluxBar(Gtk.Window):
         self.power_window.add(grid)
         
         self.power_window.show_all()
+
 
     def volume_dropdown(self, button):
         if hasattr(self, "volume_window") and self.volume_window:
@@ -277,11 +299,6 @@ class FluxBar(Gtk.Window):
         self.volume_window.set_decorated(False)
         self.volume_window.set_resizable(False)
         self.volume_window.set_border_width(10)
-
-        x, y = self.get_position()
-        bx, by = button.translate_coordinates(self, 0, 0)
-        self.volume_window.move(x + bx - 50, y + by - 120)
-
 
         ver_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
 
