@@ -1,12 +1,12 @@
 {
     "explaning": [
-        "In the 'widgets' section you can add your own labels and buttons using the examples i provided.",
+        "In the 'widgets' section you can add your own labels and buttons using the examples i provided and make your own buttons and lables",
         "If you dont like the layouts you can move the labels and buttons to match your layout, you can remove the 'media' and move it to the top",
         "If you have any layouts problem (like the middle layout is a little to the left or right) you can add labels and make them trasparent to make the middle layout in the middle",
-        
-        "in the 'icon' you can set any texts you like, or you can set a glyph icon from https://fontawesome.com, https://pictogrammers.com/library/mdi/, or any glyph websites",
 
-        "the 'name' in the custom lables and buttons can be modified in the style.css (go to /home/{username}/.config/config/style.css and search for label1, label2, etc,)",
+        "in the 'icon' you can set any texts you like, or you can set a glyph icon from https://fontawesome.com and https://pictogrammers.com/library/mdi/, or any glyph websites",
+
+        "the 'name' in the custom lables and buttons can be modified in the style.css (go to style.css and search for label1, label2, etc,)",
 
         "for the buttons you can add your own actions that supports linux commands or env variables, like you see in the buttons examples",
         "I have made some system info for the labels in the 'text' section, if you want to show gpu, ram and cpu info you can add these to 'text'({gpuVram}, {gpuPower}, {gpuName}, {gpuUsage}, {gpuFan}, {gpuUsed}, {gpuTemp}, {cpuTemp}, {cpuName}, {cpuUsage}, {ramUsage}, {freeRam}, {totalRam}, {}), these are pretty clear what they do."
@@ -17,6 +17,7 @@
         {
         "position": "top",
         "Bar Height": 0,
+        "Height Gap": 0,
         "Width Gap": 0,
         "workspaces": 5
         }
@@ -25,22 +26,22 @@
     "widgets": [
         {
             "type": "button",
-            "text": "idk",
+            "text": "text",
             "action": "firefox",
-            "name": "ADD YOUR NAME AND STYLE IT IN style.css",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
         },
         {
             "type": "button",
-            "text": "idk",
+            "text": "text",
             "action": "telegram-desktop",
-            "name": "ADD YOUR NAME AND STYLE IT IN style.css",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
         },
         {
             "type": "label",
-            "text": "󰢮 {gpuUsage}",
-            "name": "ADD YOUR NAME AND STYLE IT IN style.css",
+            "text": "󰢮 {cpuName}",
+            "name": "name",
             "layout": "SELECT A LAYOUT"
         },
         {
@@ -70,8 +71,8 @@
         {
             "workspaces": "true",
             "layout": "left",
-            "active icon": "",
-            "default icon": ""
+            "active icon": "󰮯",
+            "default icon": "󰊠"
         },
         {
             "package": "true",

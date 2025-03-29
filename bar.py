@@ -21,7 +21,6 @@ if os.path.isdir(folder_path) and not os.path.exists(f'/home/{username}/.config/
     shutil.move(src, dst)
     print(f"'config' folder moved to /home/{username}/bar/, successfully!")
 
-# time.sleep(2)
 
 gi.require_version("Gtk", "3.0")
 
@@ -83,7 +82,6 @@ class FluxBar(Gtk.Window):
 
 
         gtk_mouse()
-        self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
 
         self.media = MediaPlayerMonitor()
         self.images = Images()
@@ -111,15 +109,24 @@ class FluxBar(Gtk.Window):
 
         self._workspaces()
 
-
+        
         if self.pos == 'top':
-            self.layouts.top_position(parent = self, width_gap = self.width_gap)
+            self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
+            self.layouts.top_position(parent=self, width_gap=self.width_gap, height_gap=self.height_gap)
+
         elif self.pos == 'bottom':
-            self.layouts.bottom_position(parent = self, width_gap = self.width_gap)
+            self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
+            self.layouts.bottom_position(parent=self, width_gap=self.width_gap, height_gap=self.height_gap)
+
         elif self.pos == 'left':
-            self.layouts.left_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
+            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))  # Adjusted width and height
+            self.layouts.left_position(parent=self, width_gap=self.width_gap, desired_width=self.bar_height, height_gap=self.height_gap)
+
         elif self.pos == 'right':
-            self.layouts.right_position(parent = self, width_gap = self.width_gap, desired_width = self.bar_height)
+            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))  # Adjusted width and height
+            self.layouts.right_position(parent=self, width_gap=self.width_gap, desired_width=self.bar_height, height_gap=self.height_gap)
+
+        
         else:
             print("Invalid layout, the program will exit!")
             exit(0)
@@ -142,6 +149,7 @@ class FluxBar(Gtk.Window):
         self.pos = bar_position()
         self.bar_height = bar_height()
         self.width_gap = bar_gap()
+        self.height_gap = bar_gap_()
 
     def _workspaces(self):
         total = self.widget_['workspaces']

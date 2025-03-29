@@ -27,3 +27,10 @@ def bar_gap():
         return width_gap
     except Exception as e:
         print(f"Error: {e}")
+
+def bar_gap_():
+    try:
+        height_gap = widget.get('Height Gap')
+        return height_gap
+    except Exception as e:
+        print(f"Error: {e}")
