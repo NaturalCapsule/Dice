@@ -479,7 +479,6 @@ button * {
 }
 
 .PackageButton {
-    /* font-size: 20px; */
     color: @color1;
     background-color: @color4;
     border-radius: 15px;
@@ -491,7 +490,6 @@ button * {
 
 
 .PackageButton:hover {
-    /* font-size: 20px; */
     margin: 3px;
     color: @color4;
     background-color: @color1;
@@ -500,6 +498,10 @@ button * {
     padding-left: 10px;
 }
 
+.ActiveWindow{
+    padding-left: 3px;
+    padding-right: 3px;
+}
 
 .BarImage {
     padding-left: 3px;

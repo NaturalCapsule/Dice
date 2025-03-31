@@ -2,20 +2,21 @@ import time
 import gi
 import os
 import threading
+import urllib.request
+import re
+import hashlib
+
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 from gi.repository import GdkPixbuf
 from media import MediaPlayerMonitor
-import hashlib
 from date import get_calendar_html
+from app_icons import *
 from network import *
-import urllib.request
-import tempfile
-import re
+
 media = MediaPlayerMonitor()
-# title_name = None
 
 
 def update_volume(scales, labels):
@@ -63,6 +64,64 @@ def safe_set_image(image_widget, pixbuf):
 
 
 
+# def update_activeWindow(image):
+#     def task():
+#         active_window_class = get_active_window_class()
+
+#         if active_window_class:
+#             icon_path = get_icon_path_from_class(active_window_class)
+
+#             if icon_path:
+#                 try: 
+#                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 25, 25)
+#                     circular_pixbuf = image.create_circular_pixbuf(pixbuf)
+
+#                     if circular_pixbuf:
+#                         GLib.idle_add(safe_set_image, image.active_window_image, circular_pixbuf)
+#                 except GLib.GError as e:
+#                     print(e)
+#     threading.Thread(target=task, daemon=True).start()
+
+#     return True
+
+def update_activeWindow(image):
+    def task():
+        try:
+            active_window_class = get_active_window_class()
+            if active_window_class:
+                # Use GLib.idle_add to perform the icon lookup safely in the main thread
+                # We need to store the result of idle_add to prevent garbage collection
+                image._idle_source_id = GLib.idle_add(lookup_and_set_icon, image, active_window_class)
+        except Exception as e:
+            print(f"Error in update_activeWindow task: {e}")
+    
+    # Run the socket communication in a new thread
+    thread = threading.Thread(target=task, daemon=True)
+    thread.start()
+    return True  # Return True to keep the timer running if this is used with GLib.timeout_add
+
+def lookup_and_set_icon(image, app_class):
+    try:
+        # This function runs in the main GTK thread
+        icon_path = get_icon_path_from_class(app_class)
+        if icon_path:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 20, 20)
+            if pixbuf:
+                circular_pixbuf = image.create_circular_pixbuf(pixbuf)
+                if circular_pixbuf:
+                    # Store the current pixbuf to prevent garbage collection
+                    image._current_pixbuf = circular_pixbuf
+                    image.active_window_image.set_from_pixbuf(circular_pixbuf)
+    except Exception as e:
+        print(f"Error setting icon: {e}")
+    
+    # Clean up the stored source ID
+    if hasattr(image, '_idle_source_id'):
+        delattr(image, '_idle_source_id')
+    
+    # Return False to prevent this function from being called again
+    return False
+
 def update_image(labels, images, buttons):
     global title_name, player_name
     media.monitor()
@@ -93,7 +152,6 @@ def update_image(labels, images, buttons):
                 
                 global media_tool_tip
                 media_tool_tip = f'Now Playing: {current_title}\n          By\n{media.artist}'
-
                 # Image part
                 height, width = 50, 50
                 if 'file:///' in media.art_url:

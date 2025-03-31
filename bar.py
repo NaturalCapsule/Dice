@@ -19,7 +19,7 @@ if os.path.isdir(folder_path) and not os.path.exists(f'/home/{username}/.config/
     src = 'config'
     print("moving.....")
     shutil.move(src, dst)
-    print(f"'config' folder moved to /home/{username}/bar/, successfully!")
+    print(f"'config' folder moved to /home/{username}/.config/bar/, successfully!")
 
 
 gi.require_version("Gtk", "3.0")
@@ -50,7 +50,8 @@ class FluxBar(Gtk.Window):
         self.load_bar()
         self.initUI()
         self.load_css()
-        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.workspaces, self.custom_workspaces)
+        gtk_mouse()
+        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces)
         self.show_all()
 
 
@@ -81,7 +82,6 @@ class FluxBar(Gtk.Window):
             print('no monitor detected!')
 
 
-        gtk_mouse()
 
         self.media = MediaPlayerMonitor()
         self.images = Images()
@@ -132,7 +132,7 @@ class FluxBar(Gtk.Window):
             exit(0)
 
 
-        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
+        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, update_activeWindow, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
 
 
     def load_css(self):
@@ -180,13 +180,13 @@ class FluxBar(Gtk.Window):
         self.media_window.set_resizable(False)
         self.media_window.set_border_width(10)
 
-        hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        hor_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         ver_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         fixed = Gtk.Fixed()
 
         pixbuf = self.images.dropdown_image.get_pixbuf()
         new_image = Gtk.Image.new_from_pixbuf(pixbuf.copy() if pixbuf else None)
-        hig_box.pack_start(new_image, True, True, 0)
+        hor_box.pack_start(new_image, True, True, 0)
 
         ver_box.pack_start(self.labels.dropdown_artist, False, False, 10)
         ver_box.pack_start(self.labels.dropdown_title_label, False, False, 0)
@@ -213,9 +213,9 @@ class FluxBar(Gtk.Window):
         fixed.put(backward_button, 40, 10)
         ver_box.pack_start(fixed, True, True, 0)
 
-        hig_box.pack_start(ver_box, False, False, 0)
+        hor_box.pack_start(ver_box, False, False, 0)
 
-        self.media_window.add(hig_box)
+        self.media_window.add(hor_box)
         self.media_window.connect("destroy", lambda w: setattr(self, "media_window", None))
         self.media_window.show_all()
 
@@ -237,11 +237,11 @@ class FluxBar(Gtk.Window):
         self.date_window.set_border_width(10)
         
 
-        hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        hor_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
-        hig_box.pack_start(self.labels.date_label, False, False, 0)
+        hor_box.pack_start(self.labels.date_label, False, False, 0)
 
-        self.date_window.add(hig_box)
+        self.date_window.add(hor_box)
         self.date_window.show_all()
 
 
@@ -310,10 +310,10 @@ class FluxBar(Gtk.Window):
 
         ver_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
 
-        hig_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        hor_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
 
-        hig_box.pack_start(ver_box, False, False, 0)
+        hor_box.pack_start(ver_box, False, False, 0)
         ver_box.pack_start(self.scales.volume_scale_, False, True, 0)
 
         ver_box.pack_start(self.labels.volume_label, False, False, 0)
@@ -322,7 +322,7 @@ class FluxBar(Gtk.Window):
         ver_box.pack_start(self.labels.mic_label, False, False, 0)
         
 
-        self.volume_window.add(hig_box)
+        self.volume_window.add(hor_box)
         self.volume_window.set_size_request(250, 50)
         self.volume_window.show_all()
 

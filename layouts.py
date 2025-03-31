@@ -98,13 +98,13 @@ class LayOuts:
 
         GtkLayerShell.set_exclusive_zone(parent, desired_width)
 
-        # Ensure correct size request
         parent.set_size_request(desired_width, -1)
 
         GtkLayerShell.auto_exclusive_zone_enable(parent)
 
     
     def top_position(self, parent, width_gap, height_gap):
+        #dont even need 'width_gap', but whatever.
         GtkLayerShell.init_for_window(parent)
         GtkLayerShell.set_layer(parent, GtkLayerShell.Layer.TOP)
         GtkLayerShell.set_anchor(parent, GtkLayerShell.Edge.TOP, True)
@@ -113,6 +113,7 @@ class LayOuts:
 
 
     def bottom_position(self, parent, width_gap, height_gap):
+        #dont even need 'width_gap', but whatever.
         GtkLayerShell.init_for_window(parent)
         GtkLayerShell.set_layer(parent, GtkLayerShell.Layer.BOTTOM)
         GtkLayerShell.set_anchor(parent, GtkLayerShell.Edge.BOTTOM, True)

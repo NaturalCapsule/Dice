@@ -294,7 +294,7 @@ def load_css():
 
 
 
-def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, workspaces: list, custom_workspace: list):
+def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list):
     try:
         
         with open(file_path, "r") as file:
@@ -352,6 +352,17 @@ def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, b
                         if widget['icon'] != "":
                             buttons.volume_control.set_label(widget['icon'])
 
+
+                elif "active window" in widget:
+                    if widget['active window'].lower() == 'true':
+                        widget_item = active_window_image
+                        if layout_target == 'left':
+                            left_layout.pack_start(widget_item, False, False, 0)
+                        elif layout_target == 'middle':
+                            middle_layout.pack_start(widget_item, False, False, 0)
+                        elif layout_target == 'middle':
+                            right_layout.pack_start(widget_item, False, False, 0)
+
                 elif "workspaces" in widget:
                     if widget['workspaces'].lower() == "true":
                         if widget['active icon'] != "" and widget['default icon'] != "":
@@ -367,6 +378,7 @@ def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, b
                                 elif layout_target == 'middle':
                                     middle_layout.pack_start(workspace_button, False, False, 0)
 
+                
 
                         else:
                             for workspace_button in workspaces:

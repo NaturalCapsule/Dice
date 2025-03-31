@@ -71,13 +71,17 @@
         {
             "workspaces": "true",
             "layout": "left",
-            "active icon": "󰮯",
-            "default icon": "󰊠"
+            "active icon": "",
+            "default icon": ""
         },
         {
             "package": "true",
             "layout": "left",
             "icon": ""
+        },
+        {
+            "active window": "true",
+            "layout": "left"
         }
     ]
 }
