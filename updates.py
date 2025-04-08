@@ -13,7 +13,7 @@ from gi.repository import Gtk, GLib
 from gi.repository import GdkPixbuf
 from media import MediaPlayerMonitor
 from date import get_calendar_html
-from app_icons import *
+from active_window import *
 from network import *
 
 media = MediaPlayerMonitor()
@@ -63,63 +63,57 @@ def safe_set_image(image_widget, pixbuf):
     GLib.idle_add(image_widget.set_from_pixbuf, pixbuf)
 
 
+last_active_class = None
 
-# def update_activeWindow(image):
-#     def task():
-#         active_window_class = get_active_window_class()
-
-#         if active_window_class:
-#             icon_path = get_icon_path_from_class(active_window_class)
-
-#             if icon_path:
-#                 try: 
-#                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 25, 25)
-#                     circular_pixbuf = image.create_circular_pixbuf(pixbuf)
-
-#                     if circular_pixbuf:
-#                         GLib.idle_add(safe_set_image, image.active_window_image, circular_pixbuf)
-#                 except GLib.GError as e:
-#                     print(e)
-#     threading.Thread(target=task, daemon=True).start()
-
-#     return True
 
 def update_activeWindow(image):
-    def task():
-        try:
-            active_window_class = get_active_window_class()
-            if active_window_class:
-                # Use GLib.idle_add to perform the icon lookup safely in the main thread
-                # We need to store the result of idle_add to prevent garbage collection
-                image._idle_source_id = GLib.idle_add(lookup_and_set_icon, image, active_window_class)
-        except Exception as e:
-            print(f"Error in update_activeWindow task: {e}")
-    
-    # Run the socket communication in a new thread
-    thread = threading.Thread(target=task, daemon=True)
-    thread.start()
-    return True  # Return True to keep the timer running if this is used with GLib.timeout_add
+    # Create a single thread or reuse existing one
+    if not hasattr(image, '_active_window_thread') or not image._active_window_thread.is_alive():
+        thread = threading.Thread(target=lambda: check_active_window(image), daemon=True)
+        image._active_window_thread = thread
+        thread.start()
+    return True
+
+def check_active_window(image):
+    try:
+        global last_active_class
+        active_window_class = get_active_window_class()
+        
+        if not active_window_class or active_window_class == last_active_class:
+            return
+            
+        last_active_class = active_window_class
+        
+        if hasattr(image, '_idle_source_id') and image._idle_source_id:
+            GLib.source_remove(image._idle_source_id)
+            
+        image._idle_source_id = GLib.idle_add(lookup_and_set_icon, image, active_window_class)
+    except Exception as e:
+        print(f"Error in check_active_window: {e}")
 
 def lookup_and_set_icon(image, app_class):
     try:
-        # This function runs in the main GTK thread
         icon_path = get_icon_path_from_class(app_class)
         if icon_path:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 20, 20)
-            if pixbuf:
-                circular_pixbuf = image.create_circular_pixbuf(pixbuf)
-                if circular_pixbuf:
-                    # Store the current pixbuf to prevent garbage collection
-                    image._current_pixbuf = circular_pixbuf
-                    image.active_window_image.set_from_pixbuf(circular_pixbuf)
+            # Load the icon file
+            with open(icon_path, 'rb') as f:
+                # Create pixbuf from file data to avoid keeping the file open
+                loader = GdkPixbuf.PixbufLoader()
+                loader.write(f.read())
+                loader.close()
+                # Set size to 20x20
+                pixbuf = loader.get_pixbuf().scale_simple(20, 20, GdkPixbuf.InterpType.BILINEAR)
+                
+                if pixbuf:
+                    circular_pixbuf = image.create_circular_pixbuf(pixbuf)
+                    if circular_pixbuf:
+                        image._current_pixbuf = circular_pixbuf
+                        image.active_window_image.set_from_pixbuf(circular_pixbuf)
     except Exception as e:
         print(f"Error setting icon: {e}")
-    
-    # Clean up the stored source ID
-    if hasattr(image, '_idle_source_id'):
-        delattr(image, '_idle_source_id')
-    
-    # Return False to prevent this function from being called again
+        
+    # Clear the source ID after completion
+    image._idle_source_id = None
     return False
 
 def update_image(labels, images, buttons):
@@ -219,26 +213,6 @@ def update_title(buttons):
     else:
         buttons.media_button.set_label('')
     return True
-
-# def update_title(buttons):
-#     global title_name, player_name
-#     media.monitor()
-#     if media.current_player:
-#         # Always check if player changed
-#         if player_name != media.current_player or title_name != media.title_:
-#             player_name = media.current_player
-#             title_name = media.title_
-
-#             if len(media.title_) >= 5:
-#                 new_label = f"{media.title_[:5]}.."
-#             else:
-#                 new_label = media.title_
-
-#             if buttons.media_button.get_label() != new_label:
-#                 buttons.media_button.set_label(new_label)
-#     else:
-#         buttons.media_button.set_label('')
-#     return True
 
 def get_nvidia_gpu_usage():
     try:
@@ -415,7 +389,6 @@ def fetch_updates_async(buttons):
             text = f"{nums}"
 
             GLib.idle_add(buttons.package_button_.set_label, f'{glyph} {text}')
-            # GLib.idle_add(buttons.package_button_.set_label, f'󰏖 | {nums}')
 
         except subprocess.TimeoutExpired:
             process.kill()
@@ -435,7 +408,6 @@ def update_network(labels):
         labels.custom_wifi.set_text(labels.online_icon)
         labels.tooltip_text = ssid_
     else:
-        # labels.network_label.set_text("󰤭")
         labels.network_label.set_text("󰤭")
         labels.custom_wifi.set_text(labels.offline_icon)
         

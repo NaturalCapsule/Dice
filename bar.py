@@ -56,12 +56,30 @@ class FluxBar(Gtk.Window):
 
 
     def initUI(self):
-        with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
-            widgets = json.load(file)
-            
-            for self.widget_ in widgets['bar']:
-                widget_ = None
-                
+        self.load_use_widget()
+        self.setupUI()
+
+        self.media = MediaPlayerMonitor()
+        self.images = Images()
+        self.labels = Labels()
+        self.scales = Scales()
+
+        self.setupButtons()
+  
+        poll_active_workspace(set_active_workspace, self.buttons_)
+
+        self.play_pause_button = Gtk.Button(label="Play")
+        self.play_pause_button.get_style_context().add_class('playPauseButton')
+
+        self.layouts = LayOuts(parent = self)
+
+        self._workspaces()
+        self.bar_layouts(self.screen_width, self.screen_height)
+
+
+        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, update_activeWindow, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button, poll_active_workspace, set_active_workspace, self.use_volume, self.use_wifi, self.use_workspace, self.use_active_icon, self.use_media, self.use_time, )
+
+    def setupUI(self):
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_resizable(False)
@@ -74,21 +92,15 @@ class FluxBar(Gtk.Window):
             monitor = display.get_monitor(0)
             if monitor:
                 geometry = monitor.get_geometry()
-                screen_width = geometry.width
-                screen_height = geometry.height
+                self.screen_width = geometry.width
+                self.screen_height = geometry.height
             else:
                 print('no monitor detected!')
         else:
             print('no monitor detected!')
 
 
-
-        self.media = MediaPlayerMonitor()
-        self.images = Images()
-        self.labels = Labels()
-        self.scales = Scales()
-
-
+    def setupButtons(self):
         button_actions = [lambda button=None: self.media_dropdown(button), lambda button: workspace_1(button),
                 lambda button=None: workspace_2(button), lambda button=None: workspace_3(button),
                 lambda button=None: workspace_4(button), lambda button=None: workspace_5(button),
@@ -100,16 +112,33 @@ class FluxBar(Gtk.Window):
                 lambda button=None: self.volume_dropdown(button), lambda button=None: update_action(button)]
         
         self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
-        poll_active_workspace(set_active_workspace, self.buttons_)
-
-        self.play_pause_button = Gtk.Button(label="Play")
-        self.play_pause_button.get_style_context().add_class('playPauseButton')
-
-        self.layouts = LayOuts(parent = self)
-
-        self._workspaces()
-
         
+
+    def load_use_widget(self):
+        with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
+            widgets = json.load(file)
+            for self.widget_ in widgets['bar']:
+                widget_ = None
+                
+            for self.widget__ in widgets['widgets']:
+                if 'time' in self.widget__:
+                    self.use_time = self.widget__['time']
+                    
+                if 'workspaces' in self.widget__:
+                    self.use_workspace = self.widget__['workspaces']
+                if 'volume' in self.widget__:
+                    self.use_volume = self.widget__['volume']
+                if 'active window' in self.widget__:
+                    self.use_active_icon = self.widget__['active window']
+                
+                if 'wifi' in self.widget__:
+                    self.use_wifi = self.widget__['wifi']
+                
+                if 'media' in self.widget__:
+                    self.use_media = self.widget__['media']
+
+
+    def bar_layouts(self, screen_width, screen_height):
         if self.pos == 'top':
             self.set_default_size(screen_width - (2 * self.width_gap), self.bar_height)
             self.layouts.top_position(parent=self, width_gap=self.width_gap, height_gap=self.height_gap)
@@ -119,21 +148,16 @@ class FluxBar(Gtk.Window):
             self.layouts.bottom_position(parent=self, width_gap=self.width_gap, height_gap=self.height_gap)
 
         elif self.pos == 'left':
-            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))  # Adjusted width and height
+            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))
             self.layouts.left_position(parent=self, width_gap=self.width_gap, desired_width=self.bar_height, height_gap=self.height_gap)
 
         elif self.pos == 'right':
-            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))  # Adjusted width and height
+            self.set_default_size(self.bar_height, screen_height - (2 * self.height_gap))
             self.layouts.right_position(parent=self, width_gap=self.width_gap, desired_width=self.bar_height, height_gap=self.height_gap)
 
-        
         else:
             print("Invalid layout, the program will exit!")
             exit(0)
-
-
-        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, update_activeWindow, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button)
-
 
     def load_css(self):
         css_provider = Gtk.CssProvider()
@@ -173,7 +197,7 @@ class FluxBar(Gtk.Window):
             self.media_window.destroy()
             self.media_window = None
             return
-
+        
         self.media_window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.media_window.get_style_context().add_class('MediaWindow')
         self.media_window.set_decorated(False)
