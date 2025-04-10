@@ -1,9 +1,7 @@
 import gi
 import os
 import json
-import sys
 import shutil
-import time
 
 username = os.getlogin()
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +18,7 @@ if os.path.isdir(folder_path) and not os.path.exists(f'/home/{username}/.config/
     print("moving.....")
     shutil.move(src, dst)
     print(f"'config' folder moved to /home/{username}/.config/bar/, successfully!")
+    print(f"[Warning!]: If you don't see the folder in /home/{username}/.config/bar, Please move the 'config' folder manually to -> /home/{username}/.config/bar")
 
 
 gi.require_version("Gtk", "3.0")
@@ -31,11 +30,9 @@ from layouts import LayOuts
 from labels import Labels
 from scales import Scales
 from images import Images
-
 from updates import *
 from actions import *
 from bar_config import *
-
 from load_gtk_mouse import gtk_mouse
 from widgets import load
 from hypr_workspaces import poll_active_workspace
@@ -51,12 +48,13 @@ class FluxBar(Gtk.Window):
         self.initUI()
         self.load_css()
         gtk_mouse()
-        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces)
+        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces, self.rgb[0], self.rgb[1], self.rgb[2], self.alpha, self.bar_rgb[0], self.bar_rgb[1], self.bar_rgb[2])
         self.show_all()
 
 
     def initUI(self):
         self.load_use_widget()
+        self.load_cava_config()
         self.setupUI()
 
         self.media = MediaPlayerMonitor()
@@ -112,7 +110,21 @@ class FluxBar(Gtk.Window):
                 lambda button=None: self.volume_dropdown(button), lambda button=None: update_action(button)]
         
         self.buttons_ = Buttons(button_actions[0], button_actions[1], button_actions[2], button_actions[3], button_actions[4], button_actions[5], button_actions[6], button_actions[7], button_actions[8], button_actions[9], button_actions[10], button_actions[11], button_actions[12], button_actions[13], button_actions[14], button_actions[15], button_actions[16], button_actions[17])
-        
+
+    def load_cava_config(self):
+        with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
+    
+            for widget in widgets['widgets']:
+                if "cava" in widget:
+                    
+                    if 'background-color' in widget:
+                        self.rgb = widget['background-color']
+
+                    if "Bar Color" in widget:
+                        self.bar_rgb = widget['Bar Color']
+
+                    if 'alpha' in widget:
+                        self.alpha = widget['alpha']
 
     def load_use_widget(self):
         with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
@@ -120,22 +132,22 @@ class FluxBar(Gtk.Window):
             for self.widget_ in widgets['bar']:
                 widget_ = None
                 
-            for self.widget__ in widgets['widgets']:
-                if 'time' in self.widget__:
-                    self.use_time = self.widget__['time']
+            for widget__ in widgets['widgets']:
+                if 'time' in widget__:
+                    self.use_time = widget__['time']
                     
-                if 'workspaces' in self.widget__:
-                    self.use_workspace = self.widget__['workspaces']
-                if 'volume' in self.widget__:
-                    self.use_volume = self.widget__['volume']
-                if 'active window' in self.widget__:
-                    self.use_active_icon = self.widget__['active window']
+                if 'workspaces' in widget__:
+                    self.use_workspace = widget__['workspaces']
+                if 'volume' in widget__:
+                    self.use_volume = widget__['volume']
+                if 'active window' in widget__:
+                    self.use_active_icon = widget__['active window']
                 
-                if 'wifi' in self.widget__:
-                    self.use_wifi = self.widget__['wifi']
+                if 'wifi' in widget__:
+                    self.use_wifi = widget__['wifi']
                 
-                if 'media' in self.widget__:
-                    self.use_media = self.widget__['media']
+                if 'media' in widget__:
+                    self.use_media = widget__['media']
 
 
     def bar_layouts(self, screen_width, screen_height):

@@ -5,6 +5,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk, Gdk, GLib
 from functools import partial
+from cava import CavaVisualizer
 from updates import *
 
 def terminal(command, button):
@@ -26,7 +27,7 @@ def load_css():
 
 
 
-def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list):
+def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list, r, g, b, alpha, r_, g_, b_):
     try:
         
         with open(file_path, "r") as file:
@@ -58,6 +59,11 @@ def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, b
                                 labels.online_icon = widget["onlineIcon"]
                                 wifi_con = labels.custom_wifi
                                 widget_item = wifi_con
+
+                elif "cava" in widget:
+                    if widget['cava'].lower() == 'true':
+                        cava = CavaVisualizer(r_, g_, b_, r, g, b, alpha)
+                        widget_item = cava
 
                 elif "package" in widget:
                     if widget["package"].lower() == "true":

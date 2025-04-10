@@ -4,11 +4,15 @@ gi.require_version('Gtk', '3.0')
 gi.require_version("GtkLayerShell", "0.1")
 
 from gi.repository import Gtk, GtkLayerShell
+from cava import CavaVisualizer
 import json
 
 
 class LayOuts:
     def __init__(self, parent):
+
+        
+        
         with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:
             widgets = json.load(file)
 

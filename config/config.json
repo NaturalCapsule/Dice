@@ -82,6 +82,14 @@
         {
             "active window": "true",
             "layout": "left"
+        },
+        {
+            "cava": "true",
+            "layout": "right",
+            "alpha": 1.0,
+            "Bar Color": [255, 25, 255],
+            "background-color": [255, 0, 255]
+
         }
     ]
 }

@@ -7,12 +7,9 @@ gi.require_version('Gtk', '3.0')
 class MediaPlayerMonitor:
     def __init__(self):
         self.session_bus = dbus.SessionBus()
-        # self.players = {}
-        # self.current_player = None
         self.players = {}
         self.current_player = None
 
-        # Initialize properties with safe defaults!
         self.title_ = ''
         self.artist = ''
         self._album = ''
@@ -49,16 +46,9 @@ class MediaPlayerMonitor:
                 'position': position // 1_000_000
             }
         except dbus.exceptions.DBusException as e:
-            # print(f"Error retrieving properties: {e}")
             return None
 
-    # def update_current_player(self):
-    #     for service, player in self.players.items():
-    #         properties = self.get_player_properties(player)
-    #         if properties and properties['title'] != 'Unknown Title':
-    #             self.current_player = player
-    #             return
-    #     self.current_player = None
+
     def update_current_player(self):
         active_found = False
         for service, player in self.players.items():
@@ -72,26 +62,6 @@ class MediaPlayerMonitor:
                     self.current_player = player
         if not active_found:
             self.current_player = None
-
-
-
-    # def monitor(self):
-    #     self.get_players()
-    #     self.update_current_player()
-
-    #     if self.current_player:
-    #         self.properties = self.get_player_properties(self.current_player)
-    #         if self.properties:
-    #             self.title_ = f"{self.properties['title']}"
-    #             #  - {self.properties['artist']}
-    #             self.artist = f"{self.properties['artist']}"
-    #             self._album = f"{self.properties['album']}"
-    #             self.psoition = f"{self.properties['position']}"
-    #             self.playback_status = f"{self.properties['playback_status']}"
-    #             self.art_url = f"{self.properties['art_url']}"
-    #     else:
-    #         return 'No active media player found'
-        # return True
 
     def monitor(self):
         self.get_players()
@@ -131,20 +101,6 @@ class MediaPlayerMonitor:
 
 
 
-    # def pause_play_action(self):
-    #     # print(self.current_player)
-    #     if self.current_player:
-    #     # print(self.current_player)
-    #         subprocess.run(
-    # [
-    #     "dbus-send",
-    #     "--print-reply",
-    #     f"--dest={self.current_player.bus_name}",
-    #     "/org/mpris/MediaPlayer2",
-    #     "org.mpris.MediaPlayer2.Player.PlayPause",
-    # ],
-    # )
-
     def pause_play_action(self):
         subprocess.run(['playerctl', 'play-pause'])
 
@@ -176,15 +132,4 @@ class MediaPlayerMonitor:
                 return
 
     def reset(self):
-        # session_bus = dbus.SessionBus()
         subprocess.run(['playerctl', 'position', '0'])
-        # for service in session_bus.list_names():
-        #     if service.startswith("org.mpris.MediaPlayer2."):
-        #         player = session_bus.get_object(service, "/org/mpris/MediaPlayer2")
-        #         iface = dbus.Interface(player, "org.mpris.MediaPlayer2.Player")
-    
-        #         iface.SetPosition(dbus.ObjectPath("/org/mpris/MediaPlayer2"), 10)
-    
-        #         print("Video reset to the beginning.")
-        #         return
-    
