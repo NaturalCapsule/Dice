@@ -4,7 +4,7 @@
         "If you dont like the layouts you can move the labels and buttons to match your layout, you can remove the 'media' and move it to the top",
         "If you have any layouts problem (like the middle layout is a little to the left or right) you can add labels and make them trasparent to make the middle layout in the middle",
 
-        "in the 'icon' you can set any texts you like, or you can set a glyph icon from https://fontawesome.com and https://pictogrammers.com/library/mdi/, or any glyph websites",
+        "in the 'icon' you can set any texts you like, or you can set a glyph icon from https://fontawesome.com, https://pictogrammers.com/library/mdi/ and https://www.nerdfonts.com/cheat-sheet, or any glyph websites",
 
         "the 'name' in the custom lables and buttons can be modified in the style.css (go to style.css and search for label1, label2, etc,)",
 

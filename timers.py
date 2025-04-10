@@ -18,4 +18,4 @@ def timers(update_volume, update_date, update_time, update_image, update_pausepl
     if use_workspace == 'true':
         GLib.timeout_add(400, poll_active_workspace, set_active_workspace, buttons)
     if use_active_icon == 'true':
-        GLib.timeout_add(500, update_activeWindow, images)
+        GLib.timeout_add(250, update_activeWindow, images)

@@ -116,6 +116,7 @@ def lookup_and_set_icon(image, app_class):
     image._idle_source_id = None
     return False
 
+
 def update_image(labels, images, buttons):
     global title_name, player_name
     media.monitor()
@@ -130,7 +131,6 @@ def update_image(labels, images, buttons):
         player_name = current_player
         should_update = True
 
-    # Detect title change
     if title_name != current_title:
         print(f"Title changed: {title_name} → {current_title}")
         title_name = current_title
@@ -146,7 +146,6 @@ def update_image(labels, images, buttons):
                 
                 global media_tool_tip
                 media_tool_tip = f'Now Playing: {current_title}\n          By\n{media.artist}'
-                # Image part
                 height, width = 50, 50
                 if 'file:///' in media.art_url:
                     thumbnail = media.art_url.replace('file:///', '/')
