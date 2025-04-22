@@ -54,7 +54,8 @@ make sure these packages are installed on your system
    ```bash
    pip install pyGObject cairo
    https://github.com/NaturalCapsule/Dice
-   cd dice
+   cd Dice
+   GDK_BACKEND=wayland python bar.py
    ```
 
 
