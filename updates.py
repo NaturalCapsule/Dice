@@ -166,16 +166,16 @@ def update_image(labels, images, buttons):
                     pixbuf_large = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbnail, 400, 200)
                     radius_pixbuf = images.create_radius_pixbuf(pixbuf_large)
 
-                    if circular_pixbuf and radius_pixbuf:
-                        print("Setting images safely...")
-                        safe_set_image(images.bar_image, circular_pixbuf)
-                        safe_set_image(images.dropdown_image, radius_pixbuf)
-                        images.bar_image.set_has_tooltip(True)
-                        images.bar_image.connect("query-tooltip", media_tooltip)
-                        images.bar_image.show()
-                        images.dropdown_image.show()
-                    else:
-                        print("Error: Failed to create pixbufs.")
+                    # if circular_pixbuf and radius_pixbuf:
+                    print("Setting images safely...")
+                    safe_set_image(images.bar_image, circular_pixbuf)
+                    safe_set_image(images.dropdown_image, radius_pixbuf)
+                    images.bar_image.set_has_tooltip(True)
+                    images.bar_image.connect("query-tooltip", media_tooltip)
+                    images.bar_image.show()
+                    images.dropdown_image.show()
+                    # else:
+                        # print("Error: Failed to create pixbufs.")
 
 
 
