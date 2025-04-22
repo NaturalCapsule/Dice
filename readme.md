@@ -55,7 +55,7 @@ make sure these packages are installed on your system
    pip install pyGObject cairo
    https://github.com/NaturalCapsule/Dice
    cd dice
-```
+   ```
 
 
 
