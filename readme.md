@@ -50,7 +50,7 @@
 make sure these packages are installed on your system
 `sudo pacman -S python-gobject gtk3 pipewire pipewire-pulse`
 
-1. **Clone the repo**
+**Clone the repo**
    ```bash
    pip install pyGObject cairo
    https://github.com/NaturalCapsule/Dice
