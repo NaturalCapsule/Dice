@@ -53,10 +53,9 @@ make sure these packages are installed on your system
 1. **Clone the repo**
    ```bash
    pip install pyGObject cairo
-   git clone https://github.com/your-username/dice.git
+   https://github.com/NaturalCapsule/Dice
    cd dice
-
-
+```
 
 
 
