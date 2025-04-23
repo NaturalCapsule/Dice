@@ -48,15 +48,18 @@
 ## 📦 Installation
 
 make sure these packages are installed on your system
-`sudo pacman -S python-gobject gtk3 pipewire pipewire-pulse`
+`sudo pacman -S python-gobject gtk3 pipewire pipewire-pulse playerctl`
+and
+`pip install pyGObject cairo python-dbus`
+
 
 **Clone the repo**
    ```bash
    pip install pyGObject cairo
-   https://github.com/NaturalCapsule/Dice
-   cd Dice
-   GDK_BACKEND=wayland python bar.py
-   ```
+   git clone https://github.com/your-username/dice.git
+   cd dice
+
+
 
 
 
