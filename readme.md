@@ -52,17 +52,19 @@ make sure these packages are installed on your system
 and
 `pip install pyGObject cairo python-dbus`
 
-
-**Clone the repo**
+1. **Clone the repo**
    ```bash
-   pip install pyGObject cairo
-   git clone https://github.com/your-username/dice.git
-   cd dice
+   git clone https://github.com/NaturalCapsule/Dice
+   ```
 
+2. **Goto directory**
+   ```bash
+   cd Dice
+   ```
 
+3. **Launch**
+   ```bash
+   GDK_BACKEND=wayland python bar.py
+   ```
 
-
-
-
-
-
+4. **Enjoy!**
