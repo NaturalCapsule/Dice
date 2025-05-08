@@ -22,6 +22,7 @@ if os.path.isdir(folder_path) and not os.path.exists(f'/home/{username}/.config/
 
 
 gi.require_version("Gtk", "3.0")
+gi.require_version("Gdk", "3.0")
 
 from gi.repository import Gtk, Gdk
 from media import MediaPlayerMonitor
@@ -47,6 +48,7 @@ class FluxBar(Gtk.Window):
         self.load_bar()
         self.initUI()
         self.load_css()
+
         gtk_mouse()
         load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces, self.rgb[0], self.rgb[1], self.rgb[2], self.alpha, self.bar_rgb[0], self.bar_rgb[1], self.bar_rgb[2])
         self.show_all()
