@@ -50,7 +50,8 @@
 make sure these packages are installed on your system
 `sudo pacman -S python-gobject gtk3 pipewire pipewire-pulse playerctl`
 and
-`pip install pyGObject pycairo dbus-python`
+`pip install pyGObject cairo python-dbus`
+
 
 1. **Clone the repo**
    ```bash

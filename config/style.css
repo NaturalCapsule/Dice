@@ -34,305 +34,151 @@ button * {
 
 
 .timeButton {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 12px;
-    color: @color1;
-    background-color: @color4;
-    border-radius: 15px;
-    margin: 3px;
-    padding-right: 3px;
-    padding-left: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
 
 .timeButton:hover {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 12px;
-    color: @color4;
-    background-color: @color1;
-    border-radius: 15px;
-    margin: 3px;
-    padding-right: 3px;
-    padding-left: 3px;
 }
 
 .VolumeControlButton {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    margin: 3px;
-    font-size: 17px;
-    color: @color1;
-    background-color: @color4;
-    border-radius: 15px;
-    padding-right: 10px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-    padding-left: 10px;
 }
 
 .VolumeControlButton:hover {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    margin: 3px;
-    font-size: 17px;
-    color: @color4;
-    background-color: @color1;
-    border-radius: 15px;
-    padding-right: 10px;
-    padding-left: 10px;
 }
 
 
 .mediaButton {
-    margin: 3px;
-    font-size: 14px;
-    background-color: @color4;
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    padding: 4px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
 .mediaButton:hover {
-    margin: 3px;
-    background-color: @color1;
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    border-radius: 30px;
-    padding-right: 4px;
-    padding-left: 4px;
-
 }
 
 
 
 .DropdownTitle {
-    background-color: @color4;
-    color: white;
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-
 }
 
 .DropdownArtist {
-    background-color: @color4;
-    color: white;
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
 }
 
 .Date {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 12px;
-    background-color: @color4;
 }
 
 
 .VolumeLabel {
-    background-color: @color4;
-    font-size: 25px;
-    color: @color1;
 }
 
 .MicLabel {
-    background-color: @color4;
-    font-size: 20px;
-    color: @color1;
+}
+
+.current-day {
+}
+
+.calendar-day {
+}
+
+.weekday-header {
+}
+
+.month-header {
+
 }
 
 .VolumeScale {
-    color: black;
-    background-color: @color4;
-    border-radius: 5px;
-    padding: 4px 8px;
 }
 
 .VolumeScale trough {
-    background: @color1;
-    border-radius: 5px;
-    border: 5px;
-    border: 0px;
-    
 }
 
 .VolumeScale slider {
-    background: @color1;
-    border-radius: 5px;
-    outline: none;
-    border: 0px;
-    margin-top: -6px;
 }
 
 
 .VolumeScale slider:active {
-    background: transparent;
-    outline: none;
-    border: 0px;
 }
 
 
 
 .MicScale {
-    background-color: @color4;
-    border-radius: 5px;
-    padding: 4px 8px;
 }
 
 .MicScale trough {
-    background: @color1;
-    border-radius: 5px;
-    border: 5px;
-    border: 0px;
     
 }
 
 .MicScale slider {
-    background: @color1;
-    border-radius: 5px;
-    outline: none;
-    border: 0px;
-    margin-top: -6px;
 }
 
 
 .MicScale slider:active {
-    background: transparent;
-    outline: none;
-    border: none;
 }
 
 
 
 .PowerOfflabel {
-    background-color: @color4;
-    color: @color1;
 }
 
 .Resetlabel {
-    background-color: @color4;
-    color: @color1;
+
 }
 
 .LockLabel {
-    background-color: @color4;
-    color: @color1;
+
 }
 
 .HibernateLabel {
-    background-color: @color4;
-    color: @color1;
+
 }
 
 .Wifi {
-    background-color: @color4;
-    font-size: 30px;
-    color: @color1;
-    margin: 3px;
-    padding-right: 10px;
-    padding-left: 10px;
+
 }
 
 
 .LockButton {
-    background-color: @color4;
-    font-size: 30px;
-    color: @color7;
-    margin: 3px;
-    padding-right: 3px;
-    padding-left: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .LockButton:hover {
-    background-color: @color1;
-    font-size: 30px;
-    border: 12px;
-    margin: 3px;
-    color: @color7;
-    border-radius: 15px;
-    padding-right: 3px;
-    padding-left: 3px;
+
 }
 
 .hibButton {
-    background-color: @color4;
-    font-size: 30px;
-    margin: 3px;
-    color: @color7;
-    padding-right: 3px;
-    padding-left: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .hibButton:hover {
-    background-color: @color1;
-    font-size: 30px;
-    border-radius: 15px;
-    margin: 3px;
-    color: @color7;
-    padding-right: 3px;
-    padding-left: 3px;
+
 }
 
 .RebootButton {
-    background-color: @color4;
-    font-size: 30px;
-    margin: 3px;
-    color: @color7;
-    padding-right: 3px;
-    padding-left: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .RebootButton:hover {
-    background-color: @color1;
-    border-radius: 15px;
-    margin: 3px;
-    color: @color7;
-    font-size: 30px;
-    padding-right: 3px;
-    padding-left: 3px;
+
 }
 
 .powerOffButton {
-    background-color: @color4;
-    margin: 3px;
-    color: @color7;
-    font-size: 30px;
-    padding-right: 3px;
-    padding-left: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .powerOffButton:hover {
-    background-color: @color1;
-    border-radius: 15px;
-    margin: 3px;
-    color: @color7;
-    font-size: 30px;
-    padding-right: 3px;
-    padding-left: 3px;
+
 }
 
 
 .powerSettings {
-    font-size: 17px;
-    margin: 3px;
-    color: @color1;
-    background-color: @color4;
-    border-radius: 15px;
-    padding-right: 10px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-    padding-left: 10px;
+
 }
 
 
 .powerSettings:hover {
-    font-size: 17px;
-    margin: 3px;
-    color: @color4;
-    background-color: @color1;
-    border-radius: 15px;
-    padding-right: 10px;
-    padding-left: 10px;
+
 }
 
 .workspace1,
@@ -340,12 +186,7 @@ button * {
 .workspace3,
 .workspace4,
 .workspace5 {
-    border-radius: 5px;
-    padding: 4px 8px;
-    margin: 3px;
-    /* animation: gradient_f 20s ease-in infinite; */
-    /* transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682); */
-    transition: margin-left 0.5s ease;
+
 }
 
 .workspace1:hover,
@@ -353,9 +194,7 @@ button * {
 .workspace3:hover,
 .workspace4:hover,
 .workspace5:hover {
-    background-color: @color3;
-    border-radius: 10px;
-    color: @color2;
+
 }
 
 
@@ -376,172 +215,101 @@ button * {
 
 .workspace1.active, .workspace2.active, .workspace3.active, 
 .workspace4.active, .workspace5.active {
-    /* background-color: @color7; */
-    color: @color1;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    /* margin-left: 20px; */
-    border-radius: 15px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
+
 }
 
 .workspace1:hover, .workspace2:hover, .workspace3:hover, 
 .workspace4:hover, .workspace5:hover {
-    background-color: @color5;
-    margin: 3px;
+
 
 }
 
 .workspace1.active:hover, .workspace2.active:hover, 
 .workspace3.active:hover, .workspace4.active:hover, 
 .workspace5.active:hover {
-    background-color: @color7;
-    margin: 3px;
+
 
 }
 
 
 
 .playPauseButton {
-    background-color: @color4;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    padding: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .playPauseButton:hover {
-    background-color: @color1;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    padding: 3px;
+
 
 }
 
 .resetDropdownButton {
-    background-color: @color4;
-    color: white;
-    border-radius: 15px;
-    font-size: 30px;
-    padding: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .resetDropdownButton:hover {
-    background-color: @color1;
-    color: white;
-    border-radius: 15px;
-    font-size: 30px;
-    padding: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .backwardButton {
-    background-color: @color4;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    padding: 3px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 
 }
 
 .backwardButton:hover {
-    background-color: @color1;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    padding: 3px;
+
 
 }
 
 .forwardButton {
-    background-color: @color4;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-    padding: 3px;
+
 }
 
 .forwardButton:hover {
-    background-color: @color1;
-    font-size: 30px;
-    color: white;
-    border-radius: 15px;
-    padding: 3px;
+
 }
 
 .PackageButton {
-    color: @color1;
-    background-color: @color4;
-    border-radius: 15px;
-    margin: 3px;
-    padding-right: 10px;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
-    padding-left: 10px;
+
 }
 
 
 .PackageButton:hover {
-    margin: 3px;
-    color: @color4;
-    background-color: @color1;
-    border-radius: 15px;
-    padding-right: 10px;
-    padding-left: 10px;
+
 }
 
 .ActiveWindow{
-    padding-left: 3px;
-    padding-right: 3px;
+
 }
 
 .BarImage {
-    padding-left: 3px;
-    padding-right: 3px;
+
 }
 
 .VolumeWindow {
-    background-color: @color4;
-    font-size: 20px;
+
 }
 
 
 .DateWindow {
-    background-color: @color4;
-    color: white;
+
 }
 
 .PowerWindow {
-    background-color: @color4;
-    color: white;
+
 
 }
 
 .MediaWindow {
-    background-color: @color4;
 
 }
 
 .window {
-    background-color: @color4;
-    border-radius: 20px;
-    border: 1px solid @color1;
+
 }
 
 tooltip {
-    background-color: @color4;
-    color: @color7;
-    border-radius: 22px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: @color1;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+
 }

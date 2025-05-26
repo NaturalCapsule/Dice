@@ -12,7 +12,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 from gi.repository import GdkPixbuf
 from media import MediaPlayerMonitor
-from date import get_calendar_html
+# from date import get_calendar_html
+from date import RoundedCalendarLabel
 from active_window import *
 from network import *
 
@@ -41,9 +42,8 @@ def update_time(buttons):
     buttons.time_button.set_label(current_time)
     return True
 
-def update_date(labels):
-    date = get_calendar_html()
-    labels.date_label.set_markup(date)
+def update_date(label):
+    label.update_calendar()
     return True
 
 media_tool_tip = 'No Active media is playing!'

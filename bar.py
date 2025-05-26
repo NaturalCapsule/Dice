@@ -77,7 +77,8 @@ class FluxBar(Gtk.Window):
         self.bar_layouts(self.screen_width, self.screen_height)
 
 
-        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, update_activeWindow, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button, poll_active_workspace, set_active_workspace, self.use_volume, self.use_wifi, self.use_workspace, self.use_active_icon, self.use_media, self.use_time, )
+        self.date_ = RoundedCalendarLabel()
+        timers(update_volume, update_date, update_time, update_image, update_pauseplay, update_network, update_title, fetch_updates_async, update_activeWindow, self.scales, self.labels, self.buttons_, self.images, self.play_pause_button, poll_active_workspace, set_active_workspace, self.use_volume, self.use_wifi, self.use_workspace, self.use_active_icon, self.use_media, self.use_time, date = self.date_)
 
     def setupUI(self):
         self.set_decorated(False)
@@ -273,11 +274,14 @@ class FluxBar(Gtk.Window):
         self.date_window.set_decorated(False)
         self.date_window.set_resizable(False)
         self.date_window.set_border_width(10)
-        
+
 
         hor_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
-        hor_box.pack_start(self.labels.date_label, False, False, 0)
+
+        # hor_box.pack_start(self.labels.date_label, False, False, 0)
+        hor_box.pack_start(self.date_, False, False, 0)
+
 
         self.date_window.add(hor_box)
         self.date_window.show_all()
