@@ -27,7 +27,7 @@ def load_css():
 
 
 
-def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list, r, g, b, alpha, r_, g_, b_):
+def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list, r, g, b, alpha, r_, g_, b_, spacing):
     try:
         
         with open(file_path, "r") as file:
@@ -62,7 +62,7 @@ def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, b
 
                 elif "cava" in widget:
                     if widget['cava'].lower() == 'true':
-                        cava = CavaVisualizer(r_, g_, b_, r, g, b, alpha)
+                        cava = CavaVisualizer(r_, g_, b_, r, g, b, alpha, spacing)
                         widget_item = cava
 
                 elif "package" in widget:

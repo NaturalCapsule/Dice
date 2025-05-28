@@ -50,7 +50,7 @@ class FluxBar(Gtk.Window):
         self.load_css()
 
         gtk_mouse()
-        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces, self.rgb[0], self.rgb[1], self.rgb[2], self.alpha, self.bar_rgb[0], self.bar_rgb[1], self.bar_rgb[2])
+        load(f'/home/{os.getlogin()}/.config/bar/config/config.json', self.layouts.left_box, self.layouts.middle_box, self.layouts.right_box, self.buttons_, self.labels, self.images.bar_image, self.images.active_window_image, self.workspaces, self.custom_workspaces, self.rgb[0], self.rgb[1], self.rgb[2], self.alpha, self.bar_rgb[0], self.bar_rgb[1], self.bar_rgb[2], self.spacing)
         self.show_all()
 
 
@@ -128,6 +128,9 @@ class FluxBar(Gtk.Window):
 
                     if 'alpha' in widget:
                         self.alpha = widget['alpha']
+                        
+                    if 'Spacing' in widget:
+                        self.spacing = int(widget['Spacing'])
 
     def load_use_widget(self):
         with open(f'/home/{os.getlogin()}/.config/bar/config/config.json', "r") as file:

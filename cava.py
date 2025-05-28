@@ -8,16 +8,28 @@ import cairo
 import queue
 
 class CavaVisualizer(Gtk.DrawingArea):
-    def __init__(self, r, g, b, r_, g_, b_, alpha):
+    def __init__(self, r, g, b, r_, g_, b_, alpha, spacing):
         super().__init__()
-        self.r = r
-        self.g = g
-        self.b = b
+        # self.r = r
+        # self.g = g
+        # self.b = b
         
-        self.r_ = r_
-        self.g_ = g_
-        self.b_ = b_
+        # self.r_ = r_
+        # self.g_ = g_
+        # self.b_ = b_
+        # self.alpha = alpha
+        
+        self.r = r / 255.0
+        self.g = g / 255.0
+        self.b = b / 255.0
+
+        self.r_ = r_ / 255.0
+        self.g_ = g_ / 255.0
+        self.b_ = b_ / 255.0
         self.alpha = alpha
+        self.spacing = spacing
+        
+        # print(self.r, self.r_)
 
         
         self.set_size_request(150, 30)
@@ -110,24 +122,23 @@ gravity = 100
         width = self.get_allocated_width()
         height = self.get_allocated_height()
         
-        spacing = 1
+        spacing = self.spacing
         bar_width = (width - (spacing * (self.num_bars - 1))) / self.num_bars
         
         cr.set_source_rgba(self.r_, self.g_, self.b_, self.alpha)
-        # cr.set_source_rgba(0, 0, 0, 0)
         cr.set_operator(cairo.OPERATOR_SOURCE)
         cr.paint()
         cr.set_operator(cairo.OPERATOR_OVER)
         
         x_positions = [i * (bar_width + spacing) for i in range(self.num_bars)]
         
-        # Draw the bars
         for i, value in enumerate(self.bar_values):
             bar_height = (value / 255.0) * height
             
             x = x_positions[i]
             y = height - bar_height
 
+            # cr.set_source_rgb(233, 233, 233)
             cr.set_source_rgb(self.r, self.g, self.b)
             
             cr.rectangle(x, y, bar_width, bar_height)

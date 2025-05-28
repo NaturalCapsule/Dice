@@ -14,5 +14,5 @@ def poll_active_workspace(set_active_workspace, buttons):
 
     except Exception as e:
         print("Error:", e)
-        
+
     return True
