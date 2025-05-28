@@ -33,8 +33,10 @@
         },
         {
             "type": "timer",
-            "text": "someshit %H%",
-            "interval": 1
+            "text": "Current Time: %Y-%m-%d %H:%M:%S",
+            "layout": "right",
+            "name": "customTimer",
+            "interval": 0
         },
         {
             "type": "button",
