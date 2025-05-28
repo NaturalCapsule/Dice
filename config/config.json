@@ -32,6 +32,11 @@
             "layout": "SELECT A LAYOUT"
         },
         {
+            "type": "timer",
+            "text": "someshit %H%",
+            "interval": 1
+        },
+        {
             "type": "button",
             "text": "text",
             "action": "telegram-desktop",

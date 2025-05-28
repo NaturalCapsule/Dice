@@ -1,6 +1,7 @@
 import json
 import subprocess
 import gi
+import time
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk, Gdk, GLib
@@ -25,6 +26,12 @@ def load_css():
         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
 )
 
+
+def update_time(time_label, text):
+    t = time.localtime()
+    fmt_time = time.strftime(text, t)
+    time_label.set_text(f"{fmt_time}")
+    return True
 
 
 def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, bar_image, active_window_image, workspaces: list, custom_workspace: list, r, g, b, alpha, r_, g_, b_, spacing):
@@ -297,6 +304,15 @@ def load(file_path, left_layout, middle_layout, right_layout, buttons, labels, b
                         widget_item.get_style_context().add_class(widget["name"])
                         if widget["action"] != "":
                             widget_item.connect("clicked", partial(terminal, widget["action"]))
+
+                    elif widget['type'].lower() == 'timer':
+                        widget_item = Gtk.Label()
+                        widget_item.get_style_context().add_class(widget['name'])
+                        if 'interval' in widget:
+                            if widget['interval'] == 0:
+                                continue
+                            else:
+                                GLib.timeout_add(int(widget['interval']), update_time, widget_item, widget['text'])
 
                 if widget_item:
                     if layout_target == "left":
